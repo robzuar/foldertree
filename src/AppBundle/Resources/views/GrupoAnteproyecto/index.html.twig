@@ -1,0 +1,140 @@
+{% extends '::baseAnteproyecto.html.twig' %}
+{% block body %}
+    <ol class="breadcrumb pull-right">
+        <li>
+            <a href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+        </li>
+        <li class="active">{{ singular }}</li>
+    </ol>
+
+    <h1 class="page-header">
+        <span class="text-muted font-weight-light">
+            <i class="page-header-icon ion-ios-keypad"></i>
+            Administración / {{ plural }}
+        </span>
+    </h1>
+    <div id="results">
+        {# Results here #}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            var options = {
+                _reload:       "{{ path(routes.results) }}",
+                _show:         "{{ path(routes.show, { 'id': 'idElemento' }) }}",
+                _new:          "{{ path(routes.new) }}",
+                _edit:         "{{ path(routes.edit, { 'id': 'idElemento' }) }}",
+                _enabled:      "{{ path(routes.enabled, { 'id': 'idElemento' }) }}",
+                hasDatatable:  true,
+
+                entityName:    "{{ singular }}"
+            };
+            initializeCRUD(options);
+        });
+
+
+        function addUserToGrupoAnteproyectos(id) {
+            var path = "{{ path('app_grupoanteproyecto_add_user', { 'idgrupo': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    var options = {
+                        message:        results
+                        ,form:           "#the-form"
+                        ,messageSuccess: "Agregado Correctamente"
+                    };
+                    generateBootboxCambios(options, id);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        };
+
+        function generateBootboxCambios(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    main: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+                            var formData = $(form).serializeArray();
+                            var path     = $(form).prop("action");
+                            if(typeof formData[0] === 'undefined'){
+                                if (typeof formData[0] === 'undefined') {
+
+                                    errorfile('select');
+                                }
+                                console.log('isnull');
+                                return false;
+                            }
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    if (results == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+
+                                        });
+                                    }else{
+                                        console.log(form);
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxCambios(options, id);
+                                    }
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+    </script>
+{% endblock %}

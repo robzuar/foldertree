@@ -1,0 +1,14 @@
+
+
+<li class="has-sub active">
+    <a href="javascript:;">
+        <b class="caret pull-right"></b>
+        <i class="fa fa-th-list"></i>
+        <span>Menu Principal</span>
+    </a>
+    <ul class="sub-menu">
+    {% for menu in menus %}
+        <li><a href="{{ path('category_level', { 'id': menu.id, 'pagina': 0 }) }}"><span><i class="fa fa-tags"></i>  {{ menu.title}}</span></a></li>
+    {% endfor %}
+    </ul>
+</li>

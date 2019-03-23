@@ -1,0 +1,172 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities2" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th class="col-md-2">Nombre proyecto</th>
+                        <th>Tarea</th>
+                        <th>documentos</th>
+                        <th>Estado</th>
+                        <!--<th>Tiempo</th>-->
+                        <th class="col-md-2">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for entity in entities %}
+                        {% if entity.estado != 'FOLDER'%}
+                            {% set totalfile =  entity.file|length %}
+                            <tr>
+                                <td>
+                                    {% if entity.proyectogo is not null %}
+                                        <span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-home"></i>  </span> {{ entity.proyectogo.name }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <i class="fas fa-sm fa-fw m-r-10 fa-tasks"></i>  {{ entity.document.name }} <br><strong>Cantidad de Archivos : {{ totalfile }} {% if entity.document.numfiles is not null %}/{{ entity.document.numfiles }} archivos {% endif %}</strong>
+                                    <!-- <a href="javascript:void(0)" onclick="viewnotes({{ entity.id }})" title="Ver Notas"><i class="fas fa-sm fa-fw m-r-10 fa-comments"></i>  {{ entity.document.name }}</a> <br><strong>Cantidad de Archivos : {{ totalfile }} </strong> -->
+                                </td>
+                                <td>
+                                    <!--{% if totalfile > 0 and totalfile < 3 %}
+                                        {% for file in entity.file %}
+                                            <a href="{{ asset('media/Task/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}" class="btn btn-xs"><i class="fa fa-download"></i>  {{ file.link }}</a><a href="javascript:void(0)" onclick="delete({{ entity.id }})" class="btn btn-sm btn-icon btn-danger"><i class="fa fa-unlink"></i>  </a>
+                                        {% endfor %}
+                                    {% elseif totalfile > 0 %}
+                                        Sin Archivos
+                                    {% else %}
+                                        <a onclick="viewFilesTask({{ entity.id }})"><i class="fa fa-eye"></i>   más archivos...</a>
+                                    {% endif %} -->
+                                    {%  if totalfile > 0 %}
+                                        <a onclick="viewFilesTask({{ entity.id }})"><i class="fa fa-eye"></i>  archivos</a>
+                                    {% else %}
+                                        Sin Archivos
+                                    {% endif %}
+                                </td>
+                                <td>{{ entity.estado }}</td>
+                                <!--  <td>{{entity.asignedat|time_diff("now"|date("m/d/Y")) }} días</td> -->
+                                <!--
+                                <td>
+                                    {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                        {% if(entity.asignedat is not null) %}
+                                            {%  set dias =  date(entity.asignedat).diff(date("now"))  %}
+                                            Solicitado hace {{ dias.days }} días
+                                        {% else %}
+                                            No Asignado
+                                        {% endif %}
+                                    {% elseif entity.estado == "REVISION" %}
+                                        Esperando Revisión
+                                    {% elseif entity.estado == "COMPLETADO" %}
+                                        {%  set completado =  date(entity.asignedat).diff(date(entity.dateCompleted))  %}
+                                        Completado en {{ completado.days }} días
+                                    {% endif %}
+                                </td>
+                                -->
+                                <td>
+                                    {% if not is_granted('ROLE_SUPER_ADMIN') %}
+                                        {% if entity.estado != "COMPLETADO" %}
+                                            <!-- <a class="btn-default" href="javascript:void(0)" onclick="newnote({{ entity.id }})" title="Nueva Nota"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-comment-alt"></i>  </span> Nueva Nota</a><br> -->
+                                            {% for checker in entity.checkers %}
+                                                {% if app.user.username ==  checker.checker.username %}
+                                                    {% if entity.estado == "REVISION" %}
+                                                        <a class="btn-default" href="javascript:void(0)" onclick="rejecttask({{ entity.id }})" title="Rechazar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-window-close"></i>  </span> Rechazar</a><br>
+                                                        <a class="btn-default" href="javascript:void(0)" onclick="approvetask({{ entity.id }})" title="Aceptar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-check-circle"></i>  </span> Aceptar</a><br>
+                                                    {% endif %}
+                                                    {% if entity.estado == "RECHAZADO" %}
+                                                        {% if app.user.username ==  checker.checker.username %}
+                                                            {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+
+                                                                <a class="btn-default" href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-cloud-upload-alt"></i>  </span> Subir Archivo</a><br>
+                                                                {% if totalfile > 0 %}
+                                                                    <a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% for assistent in entity.assistents %}
+                                                {% if app.user.username ==  assistent.assistent.username  %}
+                                                    {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                                        <a class="btn-default" href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-cloud-upload-alt"></i>  </span> Subir Archivo</a><br>
+                                                        {% if totalfile > 0 %}
+                                                            <a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        else assistent
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if entity.estado != "COMPLETADO" %}
+                                            <!-- <a class="btn-default" href="javascript:void(0)" onclick="newnote({{ entity.id }})" title="Nueva Nota"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-comment-alt"></i>  </span> Nueva Nota</a><br> -->
+                                        {% endif %}
+                                        {% if entity.estado == "REVISION"  %}
+                                            <a class="btn-default" href="javascript:void(0)" onclick="rejecttask({{ entity.id }})" title="Rechazar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-window-close"></i>  </span> Rechazar</a><br>
+                                            <a class="btn-default" href="javascript:void(0)" onclick="approvetask({{ entity.id }})" title="Aceptar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-check-circle"></i>  </span> Aceptar</a><br>
+                                        {% endif %}
+                                        {% if entity.estado != "REVISION"  %}
+                                            {% if entity.estado != "COMPLETADO"  %}
+                                                <a class="btn-default" href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-cloud-upload-alt"></i>  </span> Subir Archivo</a><br>
+                                            {% endif %}
+                                            {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                                {% if totalfile > 0 %}
+                                                    <a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    loadtable('table-entities2');
+
+
+    function viewFilesTask(id){
+        console.log('view files');
+
+        var path = "{{ path('app_gofile_show', {'id' : 'idElemento'}) }}";
+        path = path.replace("idElemento", id);
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: path,
+            success: function (results) {
+                bootbox.dialog({
+                    message: results,
+                    buttons: {
+                        success: {
+                            label: "<i class='fa fa-check'></i> Aceptar",
+                            className: "btn-primary",
+                            callback: function () {
+                            }
+                        }
+                    }
+                });
+                // visual adaptations
+                $('.bootbox-close-button').hide();
+                $('.modal-body').css('padding', 0);
+                $('.panel').css('margin-bottom', 0);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
+</script>
+

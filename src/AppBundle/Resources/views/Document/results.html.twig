@@ -1,0 +1,449 @@
+{% block stylesheets %}
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <link href="{{ asset('bundles/app/assets/plugins/jstree/dist/themes/default/style.min.css') }}" rel="stylesheet" />
+    <!-- ================== END PAGE LEVEL JS ================== -->
+{% endblock %}
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    <a class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-2x fa-plus-circle"></i></a>
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">Arbol de {{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <div id="documenttree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ asset('bundles/app/assets/plugins/jstree/dist/jstree.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/js/ui-tree.demo.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/bootstrap-sweetalert/sweetalert.min.js') }}"></script>
+<script>
+    //var newjson = "";
+    //var data = [];
+    var data = "[";
+    var child = false;
+
+    $(document).ready(function() {
+
+        {% if entities|length > 0 %}
+
+        var tree = {{ tree|json_encode|raw }};
+        //console.log(tree);return false;
+
+        $.each(tree, function(i, item){
+          //console.log('tree '+i);
+            data = data+ "{";
+            firstfunction(item);
+            data = data + '},';
+        });
+
+        if(child) {
+            data = data + ']';
+        }else{
+
+            data = term(data,'');
+
+            data = data + ']';
+        }
+        data = replaceAll(', {}','', data);
+        data = replaceAll('},]','}]', data);
+        //console.log(data);return false;
+        data =  JSON.parse(data);
+
+
+        //console.log(data);return false;
+        $('#documenttree').jstree({
+            "core": {
+                "animation": 0,
+                "check_callback": true,
+                "themes": {"default": true},
+                "data": data
+            },
+            "types": {
+                "#": {"max_children": 50, "max_depth": 50, "valid_children": ["root"]},
+                "root": {"icon": "fa fa-folder text-warning fa-lg inverse", "valid_children": ["default"]},
+                "default": {"icon": "far fa-2x fa-fw m-r-10 fa-folder", "valid_children": ["default", "file"]},
+                "file": {"icon": "fas fa-lg fa-fw m-r-10 fa-file-alt", "valid_children": []}
+            },
+            "plugins": [{% if is_granted('ROLE_SUPER_ADMIN') %}"dnd", "contextmenu",{% endif %} "unique","search", "state", "types", "wholerow"]
+            ,
+            "contextmenu" : {
+                "items" : customMenu
+            }
+        });
+        {% endif %}
+    });
+
+    function firstfunction(level){
+
+        var isfile = level.isfile;
+        var filetype = "default";
+        if (isfile){
+            filetype = "file";
+        }
+
+        var strline = '"id" : "'+level.id +'", "text" : "'+ level.name+'", "type" : "'+ filetype +'"';
+
+        if(level['__children'].length > 0){
+            child = true;
+            data = data +strline+ ' ,"children" : [ {';
+            var newchildren = level['__children'];
+
+            $.each(newchildren, function(i,item){
+                if(i > 0){
+                    data =data + '},{';
+                }
+                firstfunction(item);
+            });
+            data =data + '} ] }, {';
+        }else {
+            data = data + strline;
+        }
+    }
+
+    function term(str, char) {
+        var xStr = str.substring(0, str.length - 1);
+        return xStr + char;
+    }
+
+    //console.log(data);
+
+
+
+    $('#documenttree').bind('move_node.jstree',function(event,data){
+        var node = data['node'];
+        var id = node['id'];
+        var parent = node['parent'];
+
+        var path = "{{ path('app_category_move', { 'id': 'idElemento', 'parentid': 'idParent' }) }}";
+        path = path.replace('idElemento', id);
+        path = path.replace('idParent', parent);
+        loading(true);
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: path,
+            success: function(results) {
+                if (results === 'success'){
+                    loading(false);
+                    loadTree();
+                }
+            },
+            error: function(e){
+                console.log(e);
+            }
+        });
+
+    });
+
+    function customMenu(node) {
+        var tree = $("#documenttree").jstree(true);
+        var items = {
+            createItem: {
+                "separator_before": false,
+                "separator_after": true,
+                "label": "Nuevo",
+                "action": false,
+                "submenu": {
+                    "File": {
+                        "seperator_before": false,
+                        "seperator_after": false,
+                        "label": "File",
+                        action: function (data) {
+                            var ref = $('#documenttree').jstree(true);
+                            var sel = ref.get_selected();
+                            if(!sel.length) {
+                                //return false;
+                                emptybutton();
+                            }
+                            sel = ref.create_node(sel,
+                                {
+                                    text: 'Nuevo Archivo',
+                                    type: 'file',
+                                    icon: 'fa fa-file fa-lg inverse'
+                                }
+                            );
+                            //console.log(sel);
+                            if(sel) {
+                                ref.edit(sel);
+                            }else{
+                                var message = 'No puedes crear un archivo dentro de un archivo';
+                                var alerta = 'danger';
+                                var title = "Mensaje de alerta";
+                                messagesDevelSwal(alerta, message, title);
+                            }
+                        }
+                    },
+                    "Folder": {
+                        "seperator_before": false,
+                        "seperator_after": false,
+                        "label": "Folder",
+                        action: function (data) {
+                            var ref = $('#documenttree').jstree(true);
+                            var sel = ref.get_selected();
+                            if(!sel.length) {
+                                //return false;
+                                emptybutton();
+                            }
+                            sel = ref.create_node(sel,
+                                {
+                                    text: 'Nueva Carpeta',
+                                    type: 'default',
+                                    icon: 'fa fa-folder fa-lg inverse'
+                                }
+                            );
+                            //console.log(sel);
+                            if(sel) {
+                                ref.edit(sel);
+                            }else{
+                                var message = 'No puedes crear una carpeta dentro de un archivo';
+                                var alerta = 'danger';
+                                var title = "Mensaje de alerta";
+                                messagesDevelSwal(alerta, message, title);
+                            }
+                        }
+                    }
+                }
+            },
+            changeItem : {
+                "label" : "Cambiar Tipo",
+                "action": function (data) {
+                    var ref = $('#documenttree').jstree(true);
+                    var sel = ref.get_selected();
+                    if(!sel.length) {
+                        //return false;
+                        emptybutton();
+                    }
+                    if(sel) {
+                        changeType(sel);
+                    }
+                }
+            },
+            renameItem: { // The "rename" menu item
+                label: "Renombrar",
+                action: function () {
+                    var ref = $('#documenttree').jstree(true);
+                    var sel = ref.get_selected();
+                    if(!sel.length) {
+                        //return false;
+                        emptybutton();
+                    }
+                    if(sel) {
+                        ref.edit(sel);
+                    }
+                }
+            },
+            deleteItem : {
+                "label" : "Eliminar",
+                "action" : function(data) {
+                    swal({
+                        title: "Está seguro que desea eliminar el archivo/carpeta?",
+                        text: "Despues de eliminar no será posible recuperar el archivo/carpeta!",
+                        type: "warning",
+                        buttons:
+                            {
+                                cancel: {
+                                    text: "Cancel",
+                                    value: null,
+                                    visible: true,
+                                    className: "",
+                                    closeModal: true,
+                                },
+                                confirm: {
+                                    text: "OK",
+                                    value: "test",
+                                    visible: true,
+                                    className: "",
+                                    closeModal: true
+                                }
+                            },
+                    } ).then((isConfirm) =>
+                        {
+                            if (isConfirm) {
+                                tree.delete_node(node);
+                                swal("Eliminado!", "El archivo/carpeta ha sido eliminado.", "success");
+                            } else {
+                                swal("Cancelado", "no se han realizado acciones :)", "error");
+                            }
+                        }
+                    )
+
+                    //this.remove(obj);
+                }
+            },
+        };
+
+        /*
+        if ($(node).hasClass("folder")) {
+            // Delete the "delete" menu item
+            delete items.deleteItem;
+        }
+        */
+        return items;
+    }
+
+
+    $('#documenttree').on('create_node.jstree', function (e, data) {
+        var isfile= data.node.original.type;
+        //console.log(data);return false;
+        var id = data.node.parent;
+        var text = 'nuevoelementoalabase';
+        var val = 'new';
+        var path = "{{ path('app_document_tree_up', { 'id': 'idElemento', 'text': 'text', 'val': 'valElement', 'isfile': 'valueFile' }) }}";
+        path = path.replace('idElemento', id);
+        path = path.replace('text', text);
+        path = path.replace('valElement', val);
+        path = path.replace('valueFile', isfile);
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function (results) {
+              //console.log(results);return false;
+              if(results.respuesta === 'success') {
+                  data.instance.set_id(data.node, results.id);
+              }else{
+                  loadTable();
+              }
+                //data.instance.refresh();
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    });
+
+    $("#documenttree").on("delete_node.jstree", function (e, data) {
+        console.log('funcion 2');
+        var id = data.node.id;
+        var path = "{{ path('app_document_tree_delete', { 'id': 'idElemento' }) }}";
+        path = path.replace('idElemento', id);
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function (results) {
+                loadTable();
+                //data.instance.refresh();
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    });
+
+    $('#documenttree').on('rename_node.jstree', function (e, data) {
+        var isfile= data.node.original.type;
+        var id = data.node.id;
+        var text = data.text;
+        var val ="old";
+
+        //console.log(data);return false;
+        //console.log(text);return false;
+
+        var path = "{{ path('app_document_tree_up', { 'id': 'idElemento', 'text': 'text', 'val': 'valElement', 'isfile': 'valueFile'}) }}";
+        path = path.replace('idElemento', id);
+        path = path.replace('text', text);
+        path = path.replace('valElement', val);
+        path = path.replace('valueFile', isfile);
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function (results) {
+                loadTable();
+                //data.instance.refresh();
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+
+    });
+
+    $('#documenttree').bind('move_node.jstree',function(event,data){
+        var node = data['node'];
+        var id = node['id'];
+        var parent = node['parent'];
+
+        var path = "{{ path('app_document_tree_move', { 'id': 'idElemento', 'parentid': 'idParent' }) }}";
+        path = path.replace('idElemento', id);
+        path = path.replace('idParent', parent);
+
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function(results) {
+                //console.log(results);return false;
+                if (results === 'success'){
+                    loadTable();
+                    //data.instance.refresh();
+                }
+            },
+            error: function(e){
+                console.log(e);
+            }
+        });
+
+    });
+
+    function changeType(data){
+        //console.log(data);return false;
+        var id = data;
+
+        var path = "{{ path('app_document_tree_change', { 'id': 'idElemento' }) }}";
+        path = path.replace('idElemento', id);
+
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function(results) {
+                //console.log(results);return false;
+                if (results === 'success'){
+                    loadTable();
+                    //data.instance.refresh();
+                }else if(results === 'cant'){
+                    var message = 'No puedes cambiar una carpeta a archivos si tiene archivos o carpetas en su interior';
+                    var alerta = 'danger';
+                    var title = "Mensaje de alerta";
+                    messagesDevelSwal(alerta, message, title);
+                    //data.instance.refresh();
+                }
+            },
+            error: function(e){
+                console.log(e);
+            }
+        });
+
+    }
+
+    function emptybutton(){
+        //crear mensaje de seleccion de carpeta
+
+        $('#emptyvalue').removeClass('hide');
+        error = true;
+        setTimeout(function() {
+            $('#emptyvalue').addClass("hide");
+        }, 6000);
+        return false;
+    }
+
+    function replaceAll(find, replace, str)
+    {
+        while( str.indexOf(find) > -1)
+        {
+            str = str.replace(find, replace);
+        }
+        return str;
+    }
+
+</script>

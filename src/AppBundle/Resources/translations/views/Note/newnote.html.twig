@@ -1,0 +1,59 @@
+{% extends '::base_ajax.html.twig' %}
+{% block body %}
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- begin panel -->
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn">
+                    </div>
+                    <h2 style="font-size: 14px" class="panel-title">{{ singular }}</h2>
+                </div>
+
+                <div class="panel-body">
+                    <form id="the-form" action="{{ path('app_note_newnotetask',{ id: id }) }}" method="POST" >
+                        {{ app_macros.app_style_form(form) }}
+
+                        <div class="col-md-12" align="right">
+                            <button id="save"  class="btn btn-primary btn-medium">Guardar</button>
+
+                        </div>
+                        <div class="hide">
+                            {{ form_rest(form) }}
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ asset('bundles/app/assets/plugins/jquery/jquery-1.9.1.min.js') }}"></script>
+    <script>
+/*
+        $('the-form').submit(function(e) {
+            var form = $(this);
+           // var url = form.attr('action');
+
+            checkLoadingDevel(true);
+            var path = ;
+            path =
+
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: path,
+                data: form.serialize(),
+                success: function(results) {
+                    checkLoadingDevel(false);
+                        return false;
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+            return false;
+        });
+        */
+    </script>
+{% endblock %}

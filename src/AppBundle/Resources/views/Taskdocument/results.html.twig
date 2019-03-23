@@ -1,0 +1,42 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    <a href="#" class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-2x fa-plus-circle"></i></a>
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th class="hide"></th>
+                        <th>Estado</th>
+                        <th>Nombre proyecto</th>
+                        <th>Documento</th>
+                        <th>Detalles</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                            <tr>
+                                <td class="hide">{{ entity.id }}</td>
+                                <td>{{ entity.estado }}</td>
+                                <td>{% if entity.proyectogo is not null %}{{ entity.proyectogo.name }}{% endif %}</td>
+                                <td>{% if entity.document is not null %}{{ entity.document.name }}{% endif %}</td>
+                                <td class="col-md-1">
+                                    <a class="btn btn-inverse btn-block btn-details disabled-entity" title="Detalles"data-id="{{ entity.id }}">
+                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

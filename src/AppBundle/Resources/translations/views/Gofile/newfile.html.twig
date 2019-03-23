@@ -1,0 +1,161 @@
+{% block body -%}
+    <div id="content-form">
+        <form id="the-form-file" action="{{ path('app_gofile_newfile', { 'id': idtask }) }}" method="POST" enctype="multipart/form-data">
+            <div id="fileempty" class="hide alert alert-danger fade in m-b-15" >
+                Debe agregar almenos un archivo.
+            </div>
+            <div id="typefile" class="hide alert alert-danger fade in m-b-15" >
+                Ha seleccionado un/os archivo/s no válido/s.<br>
+                Archivos Válidos : Word, Excel, Powerpoint, jpg, png, gif y pdf.<br>
+                Debe volver a cargar archivos solo con los tipos descritos.
+            </div>
+            <div id="fileoversize" class="hide alert alert-danger fade in m-b-15" >
+                Ha seleccionado un/os archivo/s que exceden el tamaño maximo. 20 MegaBytes<br>
+                Debe volver a cargar archivos.
+            </div>
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h2 style="font-size: 14px" class="panel-title">Agregar Archivo/s</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="panel panel-inverse">
+                        <div class="panel-body">
+                            <div class="form-group" >
+                                <label>Nombre Archivo</label>
+                                <input id="fileupload" type="file" name="files[]"  accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.gif,.xls,.xlsx,.ppt,.pptx" multiple>
+                            </div>
+
+
+                            <div class="col-md-12" align="right">
+                                <a class="btn btn-default" onclick="viewTasks('idproyecto',{{ idproyecto }});"><i class="fa fa-arrow-left"></i> Volver</a>
+                                <button id="uploadButton" type="submit" class="btn btn-primary btn-medium">Guardar</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        function jsShowWindowLoad2(mensaje) {
+            //eliminamos si existe un div ya bloqueando
+            jsRemoveWindowLoad2();
+
+            //si no enviamos mensaje se pondra este por defecto
+            if (mensaje === undefined) mensaje = "Procesando la información<br>Espere por favor";
+
+            //centrar imagen gif
+            height = 20;//El div del titulo, para que se vea mas arriba (H)
+            var ancho = 0;
+            var alto = 0;
+
+            //obtenemos el ancho y alto de la ventana de nuestro navegador, compatible con todos los navegadores
+            if (window.innerWidth == undefined) ancho = window.screen.width;
+            else ancho = window.innerWidth;
+            if (window.innerHeight == undefined) alto = window.screen.height;
+            else alto = window.innerHeight;
+
+            //operación necesaria para centrar el div que muestra el mensaje
+            var heightdivsito = alto/2 - parseInt(height)/2;//Se utiliza en el margen superior, para centrar
+
+            //imagen que aparece mientras nuestro div es mostrado y da apariencia de cargando
+            imgCentro = "<div style='text-align:center;height:" + alto + "px;'><div  style='color:#000;margin-top:" + heightdivsito + "px; font-size:20px;font-weight:bold'>" + mensaje + "</div></div>";
+
+            //creamos el div que bloquea grande------------------------------------------
+            div = document.createElement("div");
+            div.id = "WindowLoad"
+            div.style.width = ancho + "px";
+            div.style.height = alto + "px";
+            $("body").append(div);
+
+            //creamos un input text para que el foco se plasme en este y el usuario no pueda escribir en nada de atras
+            input = document.createElement("input");
+            input.id = "focusInput";
+            input.type = "text"
+
+            //asignamos el div que bloquea
+            $("#WindowLoad").append(input);
+
+            //asignamos el foco y ocultamos el input text
+            $("#focusInput").focus();
+            $("#focusInput").hide();
+
+            //centramos el div del texto
+            $("#WindowLoad").html(imgCentro);
+
+        }
+
+
+        function jsRemoveWindowLoad2() {
+            // eliminamos el div que bloquea pantalla
+            $("#WindowLoad").remove();
+        }
+
+        $(document).ready(function() {
+            $('form').submit(function(ev) {
+
+                console.log('entro');
+                var error = false;
+                if($('#fileupload').val() == ''){
+                    $('#fileempty').removeClass('hide');
+                    error = true;
+                    setTimeout(function() {
+                        $('#fileempty').addClass("hide");
+                    }, 6000);
+                }
+
+                $('INPUT[type="file"]').each(function(){
+                    console.log('en file');
+                    if(typeof this.files[0] !== 'undefined'){
+                        var size = this.files[0].size;
+                        console.log(size);
+
+                        if(size > 20000000){
+                            $('#fileoversize').removeClass('hide');
+                            error = true;
+                            setTimeout(function() {
+                                $('#fileoversize').addClass("hide");
+                            }, 6000);
+                        }
+                    }
+                });
+
+                if(error === true){
+                    return false;
+                }else{
+                    jsShowWindowLoad2();
+                }
+
+            });
+        });
+
+
+        $('INPUT[type="file"]').change(function () {
+            var ext = this.value.match(/\.(.+)$/)[1];
+            switch (ext) {
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'doc':
+                case 'docx':
+                case 'xls':
+                case 'xlsx':
+                case 'ppt':
+                case 'pptx':
+                case 'gif':
+                case 'pdf':
+                    $('#uploadButton').attr('disabled', false);
+                    break;
+                default:
+                    $('#typefile').removeClass('hide');
+                    setTimeout(function() {
+                        $('#typefile').addClass("hide");
+                    }, 6000);
+                    this.value = '';
+            }
+        });
+
+
+    </script>
+{% endblock %}

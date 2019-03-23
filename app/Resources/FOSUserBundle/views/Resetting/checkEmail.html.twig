@@ -1,0 +1,11 @@
+{% extends "::baseindex.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block formulario %}
+    <div align="center" class="form-group m-b-20">
+        <span class="alert-icon"><i class="fa fa-info-circle"></i></span>
+        <br><br>testetetete
+        <h4><font color="yellow">{{ 'resetting.check_email'|trans({'%email%': email}) }}</font></h4>
+    </div>
+{% endblock %}

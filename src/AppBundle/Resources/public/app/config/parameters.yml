@@ -1,0 +1,14 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: app-img-reload
+    database_user: root
+    #database_name: appimagina
+    #database_password: imagina2017
+    database_password: root
+    mailer_transport: gmail
+    mailer_host: null
+    mailer_user: comunicaciones@imagina.cl
+    mailer_password: imagina2017
+    secret: ThisTokenIsNotSoSecretChangeIt

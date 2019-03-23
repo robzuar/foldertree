@@ -1,0 +1,258 @@
+{% extends '::baseGo.html.twig' %}
+{%  set encargado = app.session.get('encargado') %}
+{% block body %}
+    <ol class="breadcrumb pull-right">
+        <li>
+            <a href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+        </li>
+        <li class="active">{{ singular }}</li>
+    </ol>
+
+    <h1 class="page-header">
+        <span class="text-muted font-weight-light">
+            <i class="page-header-icon ion-ios-keypad"></i>
+            Administración / {{ plural }}
+        </span>
+    </h1>
+    <br>
+    <div class="row">
+        <div class="col-md-12"><label>Seleccione {{ sys_checker }}:</label></div>
+        <div class="col-md-9">
+
+            <select id="role" name="role"  class="form-control">
+                <option value="0">Seleccionar</option>
+                <option value="1">{{ sys_checker }}</option>
+                <option value="2">{{ sys_assistent }}</option>
+
+            </select>
+        </div>
+
+        <div class="col-md-offset-1 col-md-2">
+            <button id="asignar" class="btn btn-inverse">
+                Asignar
+            </button>
+        </div>
+    </div>
+    <br>
+    <div id="mensajeresult"></div>
+    <div id="results">
+        {# Results here #}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/app/assets/appjs/bootbox.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/assets/appjs/devcrud.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            loadUsuarios();
+        });
+
+        $('#asignar').on('click', function(){
+            checkLoadingDevel(true);
+            var usuarios = $('.chk:checked').length;
+            var valor = $('#role').val();
+            var namerole = $('#role').text();
+            if(usuarios == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar al menos un usuario';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+            if(valor == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar Perfil';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+
+            if(valor != 0 && usuarios != 0 ) {
+                $('.chk:checked').each(function () {
+                    var chkname = $(this).data('val');
+                    var chkid = $(this).val();
+                    var path = "{{ path('app_go_usuarios_perfil',{ 'id': 'idElemento', 'valor': 'idValor' }) }}";
+                    path = path.replace('idElemento', chkid);
+                    path = path.replace('idValor', valor);
+                    $.ajax({
+                        type: 'GET',
+                        async: true,
+                        url: path,
+                        success: function (results) {
+                            if (results === 'success') {
+                                var message = 'Se ha agregado perfil: ' + namerole + ' a  usuario: ' + chkname + ' .';
+                                var alerta = 'alert-success';
+                                messagesDevelDiv(alerta, message);
+                            } else if (results === 'duplicate') {
+                                var message = 'No Se ha agregado a peril: ' + namerole + ' a usuario: ' + nombre + ' por que ya existe en la base de datos.';
+                                var alerta = 'alert-danger';
+                                messagesDevelDiv(alerta, message);
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+                });
+                $('#role').val(0);
+                $('input[type=checkbox]').prop('checked',false);
+                checkLoadingDevel(false);
+                loadUsuarios();
+            }
+
+        });
+
+        function loadUsuarios(){
+            checkLoadingDevel(true);
+            var path = "{{ path('app_usuario_usuarios') }}";
+
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    $('#results').html('').html(results);
+                    checkLoadingDevel(false);
+                    loadtable('table-entities');
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+        function inchargeToProyect(id){
+            checkLoadingDevel(true);
+            var path = "{{ path('app_go_inchargetoproyect',{ 'id': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+
+            $.ajax({
+                type: 'GET',
+               async: true,
+                url: path,
+                success: function(results) {
+                    $('#results').html('').html(results);
+                    checkLoadingDevel(false);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+        function analystToProyect(id){
+            checkLoadingDevel(true);
+            var path = "{{ path('app_go_analysttoproyect',{ 'id': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+
+            $.ajax({
+                type: 'GET',
+               async: true,
+                url: path,
+                success: function(results) {
+                    //console.log('entro');return;
+                    $('#results').html('').html(results);
+                    checkLoadingDevel(false);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+        function editUsuario(id) {
+            var path = "{{ path('app_usuario_edit',{ 'id': 'idElemento' }) }}";
+            path = path.replace("idElemento", id);
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    var options = {
+                        title:          "Editar " + entityName
+                        ,message:        results
+                        ,form:           "#the-form"
+                        ,messageSuccess: "Editado Correctamente"
+                    };
+                    generateBootboxFormUser(options);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+        function  generateBootboxFormUser(options) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    main: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+                            var formData = $(form).serializeArray();
+                            var path     = $(form).prop("action");
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    if (results == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+                                            //loadTable();
+                                            document.location.reload(true)
+                                        });
+                                    }else{
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxForm(options);
+                                    }
+                                    checkLoadingDevel(false);
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+    </script>
+{% endblock %}

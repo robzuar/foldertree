@@ -1,0 +1,46 @@
+{% extends '::base_ajax.html.twig' %}
+{% block body %}
+    <!-- begin panel -->
+    <div class="panel panel-inverse bootboxpanel">
+        <div class="panel-heading">
+            <div class="panel-heading-btn">
+            </div>
+            <h2 style="font-size: 14px" class="panel-title">{{ singular }}</h2>
+        </div>
+        <div class="panel-body">
+            <form id="the-form" action="{{ path(routes.edit, { id: entity.id }) }}" method="POST">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-0">
+                        <div class="row">
+                            <div class="col-md-5 col-md-offset-1">
+                                <div class="form-group {% if form_errors(form.name) is not empty  %}has-error has-feedback{% endif %}" >
+                                    <label>Proyecto</label>
+                                    {{ form_widget(form.name) }}
+                                    {% if form_errors(form.name) is not empty %}
+                                        <div class="btn btn-danger btn-xs disabled">
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-md-offset-1">
+                                <div class="form-group {% if form_errors(form.inmobiliaria) is not empty  %}has-error has-feedback{% endif %}" >
+                                    <label>Inmobiliaria</label>
+                                    {{ form_widget(form.inmobiliaria) }}
+                                    {% if form_errors(form.inmobiliaria) is not empty %}
+                                        <div class="btn btn-danger btn-xs disabled">
+                                            {{ form_errors(form.inmobiliaria) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hide">
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

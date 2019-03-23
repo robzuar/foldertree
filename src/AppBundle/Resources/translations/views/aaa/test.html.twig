@@ -1,0 +1,31 @@
+if(level.isfile ===  true) {
+textassistent = "**{{ sys_assistent }} :";
+textchecker = "**{{ sys_checker }} :";
+
+$.each(task, function(i, item){
+
+if (item.document.id == level.id) {
+
+console.log('test');
+var assistents = item.assistent;
+var checkers = item.checker;
+
+if (assistents.length > 0) {
+console.log('assistents');
+for (let elementa in assistents) {
+textassistent = textassistent + assistents[elementa].name + ",";
+}
+} else {
+textassistent = textassistent + " -sin {{ sys_assistent }}.";
+}
+if (checkers.length > 0) {
+console.log('checkers');
+for (let elementb in checkers) {
+textchecker = textchecker + checkers[elementb].name + ",";
+}
+} else {
+textchecker = textchecker + "-sin {{ sys_checker }}."
+}
+}
+});
+}

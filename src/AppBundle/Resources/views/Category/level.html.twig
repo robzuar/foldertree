@@ -1,0 +1,1196 @@
+{% macro display_tree(level) %}
+    {% import _self as macro %}
+    <li>
+        <h4><a href="#">{{ level.title }}</a></h4>
+
+        {% if level.__children|length %}
+            {% set newchildren = level.__children %}
+            <ul>
+                {% for child in newchildren %}
+                    {{ macro.display_tree(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+{% macro display_tree_data(level) %}
+    {% import _self as macro %}
+
+    "id" : "{{ level.id }}", "text" : "{{ level.title }}"
+        {% if level.__children|length %}
+            {% set newchildren = level.__children %}
+            ,"children" : [ {
+                {% for child in newchildren %}
+                    {% if  loop.first %}
+
+                    {% else %}
+                        },{
+                    {% endif %}
+                    {{ macro.display_tree_data(child) }}
+                {% endfor %}
+            }]
+        {% endif %}
+
+{% endmacro %}
+
+{% import _self as macro %}
+
+{% extends '::baseDatastore.html.twig' %}
+{% block stylesheets %}
+<!-- ================== BEGIN PAGE LEVEL JS ================== -->
+<link href="{{ asset('bundles/app/assets/plugins/jstree/dist/themes/default/style.min.css') }}" rel="stylesheet" />
+<!-- ================== END PAGE LEVEL JS ================== -->
+{% endblock %}
+{% block body %}
+<div id="results">
+    <ol class="breadcrumb pull-right">
+        <li>
+            <a href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+        </li>
+        <li class="active"><span class="glyphicon glyphicon-users"></span>{{ entidad.title }}</li>
+    </ol>
+
+    <h1 class="page-header">
+            <span class="text-muted font-weight-light">
+                <i class="page-header-icon ion-ios-keypad"></i>
+                {{ entidad.title }}
+            </span>
+    </h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="emptyvalue" class="hide alert alert-danger fade in m-b-15" >
+                <span class="fa-stack fa-2x"><i class="fa fa-send fa-stack-1x"></i><i class="fa fa-ban fa-stack-2x text-danger"></i></span><br>Para poder ejecutar la acción de su boton debe seleccionar una carpeta primero
+            </div>
+            <div id="nopermiso" class="hide alert alert-danger fade in m-b-15" >
+                <span class="fa-stack fa-2x"><i class="fa fa-send fa-stack-1x"></i><i class="fa fa-ban fa-stack-2x text-danger"></i></span><br>Ud. no tiene permisos para visualizar los archivos de esta carpeta.
+            </div>
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn">
+                        {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN') %}
+                            <button id="addpermiso" type="button"  onclick="addPermiso('id');" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-plus"></i></button>
+                            <button id="addpermisotocategory" onclick="addPermisoToCategory('id')" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-unlock"></i></button>
+                            <button id="permisosoncategory" onclick="permisosOnCategory('id')" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-users"></i></button>
+                            <button id="editcategory" onclick="editName('id')" class="btn btn-medium btn-icon btn-circle btn-gra btn-white"><i class="fa fa-edit"></i></button>
+                            <button id="deletecategory" onclick="disabledFolder('id')" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-trash"></i></button>
+                        {% elseif isencargado == 1 %}
+                            <button id="addpermiso" type="button"  onclick="addPermiso('id');" class="btn btn-medium btn-icon btn-circle bg-color-blueLight"><i class="fa fa-plus"></i></button>
+                            <button id="addpermisotocategory" onclick="addPermisoToCategory('id')" class="btn btn-medium btn-icon btn-circle bg-color-blueLight"><i class="fa fa-unlock"></i></button>
+                        {% endif %}
+                       <!-- <button type="button"  onclick="tree_delete();" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-trash"></i></button> -->
+                        <button id="vercontenido" type="button"  onclick="loadFolder('id');" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-eye"></i></button>
+                    </div>
+                    <h2 style="font-size: 14px" class="panel-title">Carpetas </h2>
+                </div>
+                <div class="panel-body">
+                    <div id="jstree-folder" class="demo plugin-demo jstree jstree-9 jstree-folder"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewAllFiles">
+
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/app/assets/appjs/bootbox.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/assets/appjs/devcrud.js') }}"></script>
+    <script src="{{ asset('bundles/app/assets/plugins/jstree/dist/jstree.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/assets/js/ui-tree.demo.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/assets/appjs/imagina.js') }}"></script>
+    <script>
+        var divSuccess = "<div class='alert alert-success alert-dark'>"+
+                "<strong>Alerta!</strong> Se ha creado correctamente el elemento en la base de datos."+
+                "</div>";
+        var divError = "<div class='alert alert-danger alert-dark'>"+
+                "No es posible crear este elemento </div>";
+
+        $(document).ready(function() {
+            {% set id = entidad.id %}
+            var   data = [{
+                {% for ent in entities %}
+                    {% if ent.id == id %}
+
+                        {{ macro.display_tree_data(ent) }}
+
+                    {% endif %}
+                {% endfor %}
+
+
+            }];
+
+
+            //console.log(data);return false;
+
+            $('#jstree-folder')
+                .jstree({
+                    "core" : {
+                        "animation" : 0,
+                        "check_callback" : true,
+                        "themes" : { "default" : true },
+                        "data": data
+                    },
+                    "types" : {
+                        "#" : { "max_children" : 100, "max_depth" : 100, "valid_children" : ["root"] },
+                        "root" : { "icon" : "fa fa-folder text-warning fa-lg inverse", "valid_children" : ["default"] },
+                        "default" : { "icon" : "fa fa-folder text-default fa-lg inverse","valid_children" : ["default","file"] },
+                        "file" : { "icon" : "glyphicon glyphicon-file inverse", "valid_children" : [] }
+                    },
+                    "plugins" : [ {% if is_granted('ROLE_SUPER_ADMIN') %}"dnd",{% endif %} "search", "state", "types", "wholerow" ]
+                });
+        });
+
+        $('#jstree-folder').bind('move_node.jstree',function(event,data){
+
+            //console.log(data);
+
+
+            var node = data['node'];
+
+            //console.log(node);
+
+            var id = node['id'];
+
+            //console.log(id);
+
+            var parent = node['parent'];
+
+            //console.log(parent);
+
+            path = "{{ path('app_category_move', { 'id': 'idElemento', 'parentid': 'idParent' }) }}";
+            path = path.replace('idElemento', id);
+            path = path.replace('idParent', parent);
+
+            $.ajax({
+                type: 'GET',
+               async: true,
+                url: path,
+                success: function(results) {
+                    //console.log(results);return false;
+                    if (results == 'success'){
+                        loadTree();
+                    }
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+
+        });
+
+        function loadTree() {
+            location.reload();
+        }
+
+        function loadFolder(id){
+            loading(true);
+
+
+            if(id == 'id'){
+                var ref = $('#jstree-folder').jstree(true)
+                var sel = ref.get_selected();
+                if(!sel.length) {
+                    //return false;
+                    emptybutton();
+                }
+                id = sel[0];
+            }
+
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                loadFolderPermiso(id);
+            {% else %}
+                var path = "{{ path('category_load_folder_permisos', { 'id': 'idElemento' }) }}";
+                path = path.replace('idElemento', id);
+
+                $.ajax({
+                    type: 'GET',
+                   async: true,
+                    url: path,
+                    success: function(results) {
+                        //console.log(results);return false;
+                        if (results == 'success'){
+                            loadFolderPermiso(id);
+                        }else{
+                            $('#nopermiso').removeClass('hide');
+                            error = true;
+                            setTimeout(function() {
+                                $('#nopermiso').addClass("hide");
+                            }, 6000);
+                        }
+                    },
+                    error: function(e){
+                        console.log(e);
+                    }
+                });
+            {% endif %}
+
+
+        }
+
+        function loadFolderPermiso(id){
+            var path = "{{ path('category_load_folder', { 'id': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+
+            $.ajax({
+                type: 'GET',
+               async: true,
+                url: path,
+                success: function(results) {
+                    $('#results').html('').html(results);
+                    loading(false);
+                    tableload('table-entities', sUrlDatatable);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+
+
+        function addProyecto(id) {
+            var path = "{{ path('app_proyecto_nuevo', { 'id': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    var options = {
+                        title:          "Añadir " + entityName
+                        ,message:        results
+                        ,form:           "#the-form"
+                        ,messageSuccess: "Agregado Correctamente"
+                    };
+                    generateBootboxFormCategory(options, id);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        };
+
+        function generateBootboxFormCategory(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    main: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+                            //jsShowWindowLoad();
+                            var formData = $(form).serializeArray();
+                            var path     = $(form).prop("action");
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    //console.log(results);
+                                    //jsRemoveWindowLoad();
+                                    if (results == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+                                            loadFolder(id);
+                                        });
+                                    }else{
+                                        //console.log(form);
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxFormCategory(options, id);
+                                    }
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+
+        function editProyecto(id, categoryid) {
+            var path = "{{ path('app_proyecto_edit', { 'id': 'idElemento' }) }}";
+            path = path.replace("idElemento", id);
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    var options = {
+                        title:          "Editar " + entityName
+                        ,message:        results
+                        ,form:           "#the-form"
+                        ,messageSuccess: "Editado Correctamente"
+                    };
+                    generateBootboxFormCategory(options, categoryid);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+
+
+        function generateBootboxFileUpload(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    submit: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+
+                            var formData = new FormData($('form')[0]);
+
+                            var path     = $('#the-form-file').prop("action");
+                            var messageSuccess = "Guardado Correctamente";
+                            $.ajax({
+                                type: "POST",
+                                processData: false,
+                                contentType: false,
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    //console.log(results);return false;
+                                    var listus = [], listgr = [];
+                                    var contadorus = 0;
+                                    if(results.listadousuarios[0] !== 'undefined' && results.listadousuarios[0] !== null){
+                                        contadorus = results.listadousuarios.length;
+                                    }
+                                    console.log(contadorus);
+                                    var contadorgr = 0;
+                                    if(results.listadogrupos = null){
+                                        contadorgr = results.listadogrupos.length;
+                                    }
+                                    if (contadorus >= 1) {
+                                        for (var i = 0; i < contadorus; i++) {
+
+                                            listus.push(results.listadousuarios[i]);
+                                        }
+                                    }
+                                    if (contadorgr >= 1) {
+                                        for (var i = 0; i < contadorgr; i++) {
+
+                                            listgr.push(results.listadogrupos[i]);
+                                        }
+                                    }
+
+                                    console.log(listus);
+                                    if (results.resultado == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+
+                                            /*
+                                            var pathmail =
+                                             */
+                                            var pathmail="";
+                                            $.ajax({
+                                                type: "POST",
+                                               async: true,
+                                                data:{ 'usuarios': listus, 'grupos': listgr },
+                                                url: pathmail,
+                                                success: function (result) {
+                                                    console.log(result);return false;
+                                                }
+                                            });
+                                            loadFolder(id);
+                                        });
+                                    }else{
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxFileUpload(options, id);
+                                    }
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+
+        }
+
+
+        function viewHistory(idfolder, idroot){
+            loading(true);
+            var path = "{{ path('app_fileimg_listall', { 'idfolder': 'idFolder', 'idroot' : 'idRoot' }) }}";
+
+            path = path.replace('idFolder', idfolder);
+            path = path.replace('idRoot', idroot);
+
+            $.ajax({
+                type: 'GET',
+               async: true,
+                url: path,
+                success: function(results) {
+                    $('#viewAllFiles').html('').html(results);
+                    loading(false);
+                    tableload('table-entities2', sUrlDatatable);
+
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        }
+
+        function clearView(div){
+            $('#'+div).html('');
+        }
+
+        function addFile(id){
+
+            $('#results').html('');
+            var path = "{{ path('app_fileimg_newfile', { 'id': 'idElemento' }) }}";
+            path = path.replace("idElemento", id);
+
+            $.ajax({
+                type: 'GET',
+               async: true,
+                url: path,
+                success: function(results) {
+                    $('#results').html('').html(results);
+                    tableload('data-table');
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+            //$('html, body').animate({ scrollTop: 0 }, 'slow');
+        }
+
+        function emptybutton(){
+            //crear mensaje de seleccion de carpeta
+
+            $('#emptyvalue').removeClass('hide');
+            error = true;
+            setTimeout(function() {
+                $('#emptyvalue').addClass("hide");
+            }, 6000);
+
+            /*
+             $.gritter.add({
+                 title: 'Falta un paso para completar la tarea',
+                 text: '<span class="fa-stack fa-2x"><i class="fa fa-send fa-stack-1x"></i><i class="fa fa-ban fa-stack-2x text-danger"></i></span><br>Para poder ejecutar la acción de su boton debe seleccionar una carpeta primero',
+                // image: none,
+                 sticky: false,
+                 time: ''
+             });
+             */
+            return false;
+        }
+
+        function addPermiso(id) {
+
+            if(id == 'id'){
+                var ref = $('#jstree-folder').jstree(true);
+                var sel = ref.get_selected();
+                if(!sel.length) {
+                    //return false;
+                    emptybutton();
+                }else {
+                    id = sel[0];
+                    var path = "{{ path('app_permiso_new_category', { 'idcategory': 'idElemento' }) }}";
+                    path = path.replace('idElemento', id);
+                    $.ajax({
+                        type: 'GET',
+                        async: true,
+                        url: path,
+                        success: function (results) {
+                            var options = {
+                                title: "Añadir " + entityName
+                                , message: results
+                                , form: "#the-form"
+                                , messageSuccess: "Agregado Correctamente"
+                            };
+                            generateBootboxFormPermiso(options, id);
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+                }
+            }
+
+
+
+        };
+
+        function generateBootboxFormPermiso(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    main: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+                            //jsShowWindowLoad();
+                            var formData = $(form).serializeArray();
+                            var path     = $(form).prop("action");
+                            console.log(formData);
+                            if(formData[0].value === '' || typeof formData[1] === 'undefined'){
+
+                                if(formData[0].value === ''){
+                                    //jsRemoveWindowLoad();
+                                   errorfile('input');
+                                }
+                                if (typeof formData[1] === 'undefined') {
+                                    //jsRemoveWindowLoad();
+                                    errorfile('select');
+                                }
+                                console.log('isnull');
+                                return false;
+                            }
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    //jsRemoveWindowLoad();
+                                    if (results == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+                                            loadTree();
+                                        });
+                                    }else{
+                                        console.log(results);
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxFormCategory(options, id);
+                                    }
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+
+        function addPermisoToCategory(id) {
+            if(id == 'id'){
+                var ref = $('#jstree-folder').jstree(true)
+                var sel = ref.get_selected();
+                if(!sel.length) {
+                    //return false;
+                    emptybutton();
+                }
+                id = sel[0];
+            }
+
+            var path = "{{ path('app_categoria_add_permiso', { 'idcategoria': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    var options = {
+                        message:        results
+                        ,form:           "#the-form"
+                        ,messageSuccess: "Agregado Correctamente"
+                    };
+                    generateBootboxsintitle(options, id);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        };
+
+        function generateBootboxsintitle(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    main: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+                            //jsShowWindowLoad();
+                            var formData = $(form).serializeArray();
+                            var path     = $(form).prop("action");
+                            if(typeof formData[0] === 'undefined'){
+
+                                if (typeof formData[0] === 'undefined') {
+
+                                    errorfile('select');
+                                }
+                                console.log('isnull');
+                                return false;
+                            }
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    //jsRemoveWindowLoad();
+                                    if (results == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+
+                                        });
+                                    }else{
+                                        console.log(form);
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxsintitle(options, id);
+                                    }
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+        function editName(id){
+            var ref = $('#jstree-folder').jstree(true)
+            var sel = ref.get_selected();
+            if(!sel.length) {
+                //return false;
+                emptybutton();
+            }else {
+                id = sel[0];
+
+                var path = "{{ path('app_category_editname', { 'id': 'idElemento' }) }}";
+                path = path.replace('idElemento', id);
+
+                $.ajax({
+                    type: 'GET',
+                    async: true,
+                    url: path,
+                    success: function (results) {
+                        var options = {
+                            title: "Añadir " + entityName
+                            , message: results
+                            , form: "#the-form"
+                            , messageSuccess: "Agregado Correctamente"
+                        };
+                        generateBootboxFormGeneral(options, id);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
+            }
+        }
+
+        function generateBootboxFormGeneral(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    },
+                    main: {
+                        label: "<i class='fa fa-floppy-o'></i> Guardar",
+                        className: "btn-primary",
+                        callback: function() {
+                            //jsShowWindowLoad();
+                            var formData = $(form).serializeArray();
+                            var path     = $(form).prop("action");
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                data: formData,
+                                url: path,
+                                success: function(results) {
+                                    //jsRemoveWindowLoad();
+                                    if (results == "success") {
+                                        bootbox.alert(messageSuccess, function() {
+                                            loadTree();
+                                        });
+                                    }else{
+                                        console.log(form);
+                                        var options = {
+                                            title:           title
+                                            ,message:        results
+                                            ,form:           form
+                                            ,messageSuccess: messageSuccess
+                                        };
+                                        generateBootboxFormGeneral(options, id);
+                                    }
+                                },
+                                error: function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+
+        function disabledFolder(id) {
+            var ref = $('#jstree-folder').jstree(true)
+            var sel = ref.get_selected();
+            if (!sel.length) {
+                //return false;
+                emptybutton();
+            } else {
+                id = sel[0];
+                var path = "{{ path('category_enabled', { 'id': 'idElemento' }) }}";
+                path = path.replace("idElemento", id);
+
+                var div = "<div class='alert alert-danger alert-dark'>" +
+                    "<strong>Alerta!</strong> Desea realmente eliminar el/la Carpeta. <br>" +
+                    "Esto eliminará todos los elementos asociados." +
+                    "</div>";
+                var divError = "<div class='alert alert-danger alert-dark'>" +
+                    "No es posible eliminar este elemento </div>";
+                bootbox.dialog({
+                    message: div,
+                    buttons: {
+                        info: {
+                            label: "<i class='fa fa-reply'></i> Volver",
+                            className: "btn-dafault",
+                            callback: function () {
+                            }
+                        },
+                        danger: {
+                            label: "<i class='fa fa-trash'></i> Eliminar",
+                            className: "btn-danger",
+                            callback: function () {
+                                //jsShowWindowLoad();
+                                $.ajax({
+                                    type: "POST",
+                                    async: true,
+                                    url: path,
+                                    success: function (results) {
+                                        //jsRemoveWindowLoad();
+                                        bootbox.alert(entityName + " Editada/o correctamente", function () {
+
+                                            loadTree();
+                                        });
+                                    },
+                                    error: function (e) {
+                                        //jsRemoveWindowLoad();
+                                        bootbox.alert(divError, function () {
+                                            loadTree();
+                                        });
+                                    }
+                                });
+
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        setTimeout(function() {
+            {% if cargarpagina == 1 %}
+                loadFolderPermiso({{ idpagina }});
+            {% endif %}
+        }, 500);
+
+        function eliminar_archivo(id, idfolder) {
+            var div = "<div class='alert alert-danger alert-dark'>" +
+                "<strong>Alerta!</strong> Desea realmente eliminar el archivo seleccionado." +
+                "</div>";
+            var divError = "<div class='alert alert-danger alert-dark'>" +
+                "No es posible eliminar este elemento<br>Intente más Tarde  </div>";
+            bootbox.dialog({
+                message: div,
+                buttons: {
+                    info: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-dafault",
+                        callback: function () {
+                        }
+                    },
+                    danger: {
+                        label: "<i class='fa fa-trash'></i> Eliminar",
+                        className: "btn-danger",
+                        callback: function () {
+                            //jsShowWindowLoad();
+                            var path = "{{ path('fileimg_delete_file', { 'id': 'idElemento' }) }}";
+                            path = path.replace("idElemento", id);
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                url: path,
+                                success: function (results) {
+                                    //jsRemoveWindowLoad();
+                                    if (results === 'success') {
+                                        bootbox.alert(entityName + " Eliminada/o correctamente", function () {
+                                            loadFolderPermiso(idfolder);
+                                        });
+                                    }
+                                },
+                                error: function (e) {
+                                    //jsRemoveWindowLoad();
+                                    bootbox.alert(divError, function () {
+                                        loadFolderPermiso(idfolder);
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function delete_all(idfolder){
+
+            /*
+            $("input:checkbox:checked").each(function() {
+                alert($(this).data("val"));
+            });
+            */
+
+            var allidsgood =[];
+            var allidsbad = [];
+
+            var datagood = "";
+            var databad = "";
+
+            var countgood = 0;
+            var countbad = 0;
+
+
+            var div = "<div class='alert alert-danger alert-dark'>" +
+                "<strong>Alerta!</strong> Desea realmente eliminar los archivos seleccionados." +
+                "</div>";
+            var divError = "<div class='alert alert-danger alert-dark'>" +
+                "No es posible eliminar este elemento<br>Intente más Tarde  </div>";
+            bootbox.dialog({
+                message: div,
+                buttons: {
+                    info: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-dafault",
+                        callback: function () {
+                        }
+                    },
+                    danger: {
+                        label: "<i class='fa fa-trash'></i> Eliminar",
+                        className: "btn-danger",
+                        callback: function () {
+                            //jsShowWindowLoad();
+
+
+                            $("input:checkbox:checked").each(function() {
+
+                                var newid = $(this).data("val");
+
+                                var path = "{{ path('fileimg_delete_file', { 'id': 'idElemento' }) }}";
+                                path = path.replace("idElemento", newid);
+                                $.ajax({
+                                    type: "POST",
+                                    async: true,
+                                    url: path,
+                                    success: function (results) {
+                                        console.log(results);
+                                        if (results === 'success') {
+                                            var num = allidsgood.length;
+                                            //console.log(num);
+                                            countgood = countgood +1;
+                                            allidsgood[num] = [newid];
+                                            //console.log(allidsgood);
+                                        }
+                                    },
+                                    error: function (e) {
+                                        var num1 = allidsbad.length;
+                                        allidsbad[num1] = [newid];
+                                        countbad = countbad + 1;
+                                    }
+                                });
+                            });
+
+                            /*
+
+                            console.log(allidsgood);
+                            console.log(countgood);
+                            console.log(countbad);
+
+
+                            if(countgood == 0) {
+                                datagood = "cero en este caso";
+                            }else{
+                                allidsgood.each(function (i, val) {
+                                    datagood = val + "<br> ";
+                                });
+
+                            }
+
+                            if(countbad == 0){
+                                databad = "cero en este caso";
+                            }else{
+                                allidsbad.each(function (i, val) {
+                                    databad = val + "<br> ";
+                                });
+                            }
+                            */
+
+                            //jsRemoveWindowLoad();
+                            bootbox.alert(entityName + " Eliminadas/os correctamente" , function () {
+                                loadFolderPermiso(idfolder);
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function permisosOnCategory(id) {
+            if(id == 'id'){
+                var ref = $('#jstree-folder').jstree(true);
+                var sel = ref.get_selected();
+                if(!sel.length) {
+                    //return false;
+                    emptybutton();
+                }
+                id = sel[0];
+            }
+
+            var path = "{{ path('app_categoria_show_users_permiso', { 'id': 'idElemento' }) }}";
+            path = path.replace('idElemento', id);
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: path,
+                success: function(results) {
+                    var options = {
+                        message:        results
+                        ,form:           "#the-form"
+                        ,messageSuccess: "Agregado Correctamente"
+                    };
+                    generateBootboxShowUsers(options, id);
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        };
+
+        function generateBootboxShowUsers(options, id) {
+            if ( !(options.hasOwnProperty('title')) ) {
+                title = "Alert! Debes agregar el title";
+            } else {
+                title = options.title;
+            }
+
+            if ( !(options.hasOwnProperty('message')) ) {
+                message = "Alert! Debes agregar el message";
+            } else {
+                message = options.message;
+            }
+
+            if ( !(options.hasOwnProperty('form')) ) {
+                form = "Alert! Debes agregar el form";
+            } else {
+                form = options.form;
+            }
+
+            if ( !(options.hasOwnProperty('messageSuccess')) ) {
+                messageSuccess = "Alert! Debes agregar el messageSuccess";
+            } else {
+                messageSuccess = options.messageSuccess;
+            }
+
+            bootbox.dialog({
+                message: message,
+                buttons: {
+                    success: {
+                        label: "<i class='fa fa-reply'></i> Volver",
+                        className: "btn-default",
+                        callback: function() {
+                        }
+                    }
+                }
+            });
+            $('.bootbox-close-button').hide();
+            $('.modal-body').css('padding',0);
+            $('.panel').css('margin-bottom',0);
+        }
+    </script>
+{% endblock %}

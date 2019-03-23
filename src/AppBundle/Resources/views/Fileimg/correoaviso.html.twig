@@ -1,0 +1,39 @@
+<html>
+<head></head>
+<body>
+<h1>
+    Estimado:
+<br>
+     {{ receptor.nombres }}
+</h1>
+<br>
+<br>
+<p>
+    Junto con saludar, informamos que {{ creador }}  ha actualizado la carpeta
+    {% for menu in menus %}
+        {{ menu.title }}/
+    {% endfor %}
+    de la plataforma {{ sistema }}, de acuerdo al siguiente detalle:
+</p>
+<br><br>
+<p>
+{% for archivo in archivos %}
+    {{ archivo }}<br>
+{% endfor %}
+</p>
+<br>
+<p>
+    Saludos,
+</p>
+<br>
+<br><br>
+<p>
+    <strong>
+        Comunicaciones Imagina
+    </strong>
+</p>
+
+</p>
+<br>
+</body>
+</html>

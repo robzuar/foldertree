@@ -1,0 +1,46 @@
+{% extends '::base_error.html.twig' %}
+{% block stylesheet %}
+    <style>
+
+
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="welcome-code m-b-10">Dashboard  {{ company }}</div>
+    <div class="welcome-content">
+        <div id="indexmessage" class="alert alert-dark hide">
+            <h3 style="color:white">{% if accesserror is defined %}{{ accesserror }}{% endif %}</h3>
+        </div>
+        <div class="welcome-desc m-b-30">
+            <div class="col-md-12 col-md-offset-2">
+                <div class="col-md-2 ">
+                    <i class="fas fa-cloud fa-10x"></i><br><br>
+                    <a href="{{ path('datastore') }}" class="btn btn-default p-l-20 p-r-20">Data Store</a>
+                </div>
+                <div class="col-md-2 ">
+                    <i class="fas fa-hourglass-half fa-10x"></i><br><br>
+                    <a href="{{ path('anteproyectos') }}" class="btn btn-default p-l-20 p-r-20">AnteProyectos</a>
+                </div>
+                <div class="col-md-2 ">
+                    <i class="fas fa-building fa-10x"></i><br><br>
+                    <a href="{{ path('go') }}" class="btn btn-default p-l-20 p-r-20">Go</a>
+                </div>
+                <div class="col-md-2 ">
+                    <i class="fas fa-users fa-10x"></i><br><br>
+                    <a href="{{ path('usuarios') }}" class="btn btn-default p-l-20 p-r-20">Usuarios</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        {% if accesserror is defined %}
+        setTimeout(function() {
+            $('#indexmessage').removeClass('hide');
+        },100);
+        setTimeout(function() {
+            $('#indexmessage').addClass('hide');
+        },3000);
+        {% endif %}
+    </script>
+{% endblock %}
+

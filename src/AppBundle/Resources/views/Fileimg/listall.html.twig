@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    <button id="btn-esconder" type="button"  onclick="clearView('viewAllFiles');" class="btn btn-medium btn-icon btn-circle btn-white new-file"><i class="fa fa-eye-slash"></i></button>
+                </div>
+                <h1 style="font-size: 14px" class="panel-title"><i class="fa fa-2x fa-file-o"></i>
+                    {% if proyecto is not null %}
+                        {% for menu in menus %}
+                           {{ menu.title }}/
+                        {% endfor %}
+                        -{% endif %} Versiones Anteriores
+                </h1>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities2" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="hide"></th>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            {% if pictures == true %}
+                                <th>Vista <br>Previa</th>
+                            {% endif %}
+                            <th>Versión</th>
+                            <th>Fecha Creado</th>
+                            <th>Creado Por</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for file in files %}
+                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                            {% if file.activo != true %}
+                                <tr>
+                                    <td class="hide">{{ file.id }}</td>
+                                    <td><input type="checkbox"></td>
+                                    <td>{{ file.link }}</td>
+                                    {% if pictures == true %}
+                                        <td><img id="mediumusers-image" src="{{ file.file | imagine_filter('home_thumb') }}"/></td>
+                                    {% endif %}
+                                    <td>V. {{ file.level }}</td>
+                                    <td>{{ file.created|date('d-m-Y') }}</td>
+                                    <td>{{ file.createdby.fullName }}</td>
+                                    <td>
+                                        {% if is_granted('ROLE_SUPER_ADMIN') or  is_granted('ROLE_ADMIN')  %}
+                                        <a href="{{ asset('media/upload/' ~ file.file) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        {% else %}
+                                            Sin Acciones
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            {% if file.enabled == 1 %}
+                                {% if file.activo != true %}
+                                    <tr>
+                                        <td class="hide">{{ file.id }}</td>
+                                        <td><input type="checkbox"></td>
+                                        <td>{{ file.link }}</td>
+                                        {% if pictures == true %}
+                                            <td><img id="mediumusers-image" src="{{ file.file | imagine_filter('home_thumb') }}"/></td>
+                                        {% endif %}
+                                        <td>V. {{ file.level }}</td>
+                                        <td>{{ file.created|date('d-m-Y') }}</td>
+                                        <td>{{ file.createdby.fullName }}</td>
+                                        <td>
+                                            {% if is_granted('ROLE_SUPER_ADMIN') or  is_granted('ROLE_ADMIN')  %}
+                                                <a href="{{ asset('media/upload/' ~ file.file) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                            {% else %}
+                                                Sin Acciones
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <tr><td colspan="5">Debe presionar el botón para agregar un archivo al proyecto.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

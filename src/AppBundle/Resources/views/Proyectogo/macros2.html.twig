@@ -1,0 +1,38 @@
+{% macro app_style_input(input) %}
+    <div class="form-group {% if input.vars.errors is not empty  %}has-error{% endif %}">
+        {% set strLabel = form_label(input)|split('>') %}
+        {% if strLabel[1] != 'Token</label' %}
+            <label for="inputHelpBlock">{{ form_label(input) }}    {% for error in input.vars.errors %}
+                    :  <span class="text-danger">  {{ error.message }}</span>
+                {% endfor %}</label>
+        {% endif %}
+        {% if input.vars.attr.class is not defined  %}
+            {% set clase = 'form-control' %}
+        {% else %}
+            {% set clase = input.vars.attr.class %}
+        {% endif %}
+        {{ form_widget(input, { 'attr': {'class':  clase} }) }}
+        {% for error in input.vars.errors %}
+            <p class="help-block">
+                <span class="text-error">{{ error.message }}</span>
+            </p>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro app_style_form(form) %}
+    {% import _self as app %}
+    {% for input in form %}
+        {% if input.getIterator() | length() == 0 %}
+            {{ app.app_style_input(input) }}
+        {% else %}
+            {% for inputIterator in input %}
+                {{ app.app_style_input(inputIterator) }}
+            {% endfor %}
+        {% endif %}
+        {# If is the last input add the form_rest #}
+        {% if loop.last %}
+            <div class="hide">{{ form_rest(form) }}</div>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}

@@ -1,0 +1,7 @@
+services:
+    fenec_common_extension_twig:
+        class: AppBundle\Twig\CustomExtension
+        arguments:
+            - '[@service_container]'
+        tags:
+            - { name: twig.extension }

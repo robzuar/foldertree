@@ -1,0 +1,67 @@
+{% extends '::base_ajax.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <!-- begin panel -->
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn">
+                    </div>
+                    <h2 style="font-size: 14px" class="panel-title">Nueva Carpeta</h2>
+                </div>
+
+                <div class="panel-body">
+                    <form id="the-form" action="{{ path('app_permiso_new_category', { 'idcategory': idcategory }) }}" method="POST">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input class="form-control" type="text" name="nombre" id="nombre" >
+                            <div id="errorinput" class="btn btn-danger btn-xs disabled hide">
+                                Este campo no puede estar vacio
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Grupos de Permiso</label>
+                            <select multiple class="form-control" name="userarray[]" id="userarray" >
+                                {% for grupo in grupos %}
+                                    <option value="{{ grupo.id }}"
+                                            {% if grupo in grupospermiso %}
+                                                selected="selected"
+                                            {% endif %}
+                                    >{{ grupo.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="errorselect" class="btn btn-danger btn-xs disabled hide">
+                                Este campo no puede estar vacio
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        setTimeout(function() {
+            $('#userarray').select2(
+                {width: '100%' }
+            );
+
+        }, 100);
+
+
+function errorfile(variable){
+
+    if(variable == 'input') {
+
+        $('#errorinput').removeClass('hide');
+        setTimeout(function() {
+            $('#errorinput').addClass('hide');
+        }, 6000);
+    }else{
+        $('#errorselect').removeClass('hide');
+        setTimeout(function() {
+            $('#errorselect').addClass('hide');
+        }, 6000);
+    }
+}
+    </script>
+{% endblock %}

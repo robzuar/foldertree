@@ -1,0 +1,88 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Nombre proyecto</th>
+                        <th>Documento</th>
+                        <th>Estado</th>
+                        <th>Tiempo</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {% if entity.estado != 'FOLDER'%}
+                        {% set totalfile =  entity.file|length %}
+                            <tr>
+                                <td>
+                                    {% if entity.proyectogo is not null %}
+                                        <span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-home"></i></span>{{ entity.proyectogo.name }}
+                                    {% endif %}
+                                </td>
+                                <td><a href="javascript:void(0)" onclick="viewnotes({{ entity.id }})" title="Ver Notas"><i class="fas fa-lg fa-fw m-r-10 fa-comments"></i>{{ entity.document.name }}</a> <br><strong>Cantidad de Archivos : {{ totalfile }} </strong></td>
+                                <td>{{ entity.estado }}</td>
+                                <!--  <td>{{entity.asignedat|time_diff("now"|date("m/d/Y")) }} días</td> -->
+                                <td>
+                                    {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                        {% if(entity.asignedat is not null) %}
+                                            {%  set dias =  date(entity.asignedat).diff(date("now"))  %}
+                                            Solicitado hace {{ dias.days }} días
+                                        {% else %}
+                                            No Asignado
+                                        {% endif %}
+                                    {% elseif entity.estado == "REVISION" %}
+                                        Esperando Revisióne
+                                    {% elseif entity.estado == "APROBADO" %}
+                                        {%  set completado =  date(entity.asignedat).diff(date(entity.dateCompleted))  %}
+                                        Completado en {{ completado.days }} días
+                                    {% endif %}
+                                </td>
+                                <td><ul class="nav navbar-nav navbar-right">x
+                                        <li class="dropdown navbar-user">
+                                            <a style="color: black" href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                                                <i class="fas fa-lg fa-fw m-r-10 fa-ellipsis-v"></i>
+                                                <span> </span>
+                                            </a>
+                                            <ul class="dropdown-menu animated fadeInLeft">
+                                                <li class="arrow"></li>
+                                                <li><a href="javascript:void(0)" onclick="viewFiles({{ entity.id }})" title="Ver Archivos"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-file"></i></span>Ver Archivos</a></li>
+
+                                                {% if entity.estado != "COMPLETADO" %}
+                                                    <li><a href="javascript:void(0)" onclick="newnote({{ entity.id }})" title="Nueva Nota"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-comment-alt"></i></span>Nueva Nota</a></li>
+                                                    {% if app.user.hasRole('ROLE_SUPER_ADMIN') or app.user.hasRole('ROLE_ENCARGADO') %}
+                                                        {% if entity.estado == "REVISION" %}
+                                                            <li><a href="javascript:void(0)" onclick="rejecttask({{ entity.id }})" title="Rechazar"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-window-close"></i></span>Rechazar</a></li>
+                                                            <li><a href="javascript:void(0)" onclick="approvetask({{ entity.id }})" title="Aceptar"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-check-circle"></i></span>Aceptar</a></li>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if entity.estado != "REVISION" %}
+                                                            <li><a href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-cloud-upload-alt"></i></span>Subir Archivo</a></li>
+                                                            {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                                                <li><a href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-edit fa-align-justify"></i></span>Solicitar Revisión</a></li>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

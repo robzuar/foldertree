@@ -1,0 +1,240 @@
+{% extends '::base_ajax.html.twig' %}
+{% block body -%}
+    <div class="row">
+        <div class="col-md-12">
+            <!-- begin panel -->
+            <div class="panel panel-inverse">
+                <form id="the-form" action="{{ path('app_proyecto_edit', { id: entity.id }) }}" method="POST">
+                    <div class="panel panel-inverse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.nombre) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Proyecto</label>
+                                        {{ form_widget(form.nombre) }}
+                                        {% if form_errors(form.nombre) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.nombre) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.direccion) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Dirección</label>
+                                        {{ form_widget(form.direccion) }}
+                                        {% if form_errors(form.direccion) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.direccion) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.inmobiliaria) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Inmobiliaria</label>
+                                        {{ form_widget(form.inmobiliaria) }}
+                                        {% if form_errors(form.inmobiliaria) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.inmobiliaria) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.rut) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Rut</label>
+                                        {{ form_widget(form.rut) }}
+                                        {% if form_errors(form.rut) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.rut) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.pisos) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Pisos</label>
+                                        {{ form_widget(form.pisos) }}
+                                        {% if form_errors(form.pisos) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.pisos) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.subterraneos) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Subterraneos</label>
+                                        {{ form_widget(form.subterraneos) }}
+                                        {% if form_errors(form.subterraneos) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.subterraneos) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.bodegas) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Bodegas</label>
+                                        {{ form_widget(form.bodegas) }}
+                                        {% if form_errors(form.bodegas) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.bodegas) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.departamentos) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Departamentos</label>
+                                        {{ form_widget(form.departamentos) }}
+                                        {% if form_errors(form.departamentos) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.departamentos) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.estacionamientos) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Estacionamientos Vendibles</label>
+                                        {{ form_widget(form.estacionamientos) }}
+                                        {% if form_errors(form.estacionamientos) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.estacionamientos) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.estacionamientosVisita) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Estacionamientos Visita</label>
+                                        {{ form_widget(form.estacionamientosVisita) }}
+                                        {% if form_errors(form.estacionamientosVisita) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.estacionamientosVisita) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.estado) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Estado</label>
+                                        {{ form_widget(form.estado) }}
+                                        {% if form_errors(form.estado) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.estado) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.dateend) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Fecha Termino Obra</label>
+                                        {{ form_widget(form.dateend) }}
+                                        {% if form_errors(form.dateend) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.dateend) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {% if form_errors(form.dateescritura) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Fecha de escrituración</label>
+                                        {{ form_widget(form.dateescritura) }}
+                                        {% if form_errors(form.dateescritura) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.dateescritura) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group {% if form_errors(form.dateendtext) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Fecha Término Obra Proyectada</label>
+                                        {{ form_widget(form.dateendtext) }}
+                                        {% if form_errors(form.dateendtext) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.dateendtext) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.datedelivery) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Fecha de Entrega</label>
+                                        {{ form_widget(form.datedelivery) }}
+                                        {% if form_errors(form.datedelivery) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.datedelivery) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.datelast) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Fecha Ultima Cuota</label>
+                                        {{ form_widget(form.datelast) }}
+                                        {% if form_errors(form.datelast) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.datelast) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.arquitecto) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Arquitecto</label>
+                                        {{ form_widget(form.arquitecto) }}
+                                        {% if form_errors(form.arquitecto) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.arquitecto) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group {% if form_errors(form.supervisor) is not empty  %}has-error has-feedback{% endif %}" >
+                                        <label>Supervisor</label>
+                                        {{ form_widget(form.supervisor) }}
+                                        {% if form_errors(form.supervisor) is not empty %}
+                                            <div class="btn btn-danger btn-xs disabled">
+                                                {{ form_errors(form.supervisor) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hide">
+                        {{ form_end(form) }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('.datepicker').datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+        });
+    </script>
+{% endblock %}

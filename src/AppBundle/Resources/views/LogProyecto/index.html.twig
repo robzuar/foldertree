@@ -1,0 +1,33 @@
+{% extends '::baseDatastore.html.twig' %}
+{% block body %}
+    <ol class="breadcrumb pull-right">
+        <li>
+            <a href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+        </li>
+        <li class="active"></span>{{ singular }}</li>
+    </ol>
+
+    <h1 class="page-header">
+        <span class="text-muted font-weight-light">
+            <i class="page-header-icon ion-ios-keypad"></i>
+            Administración / {{ plural }}
+        </span>
+    </h1>
+    <div id="results">
+        {# Results here #}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            var options = {
+                _reload:       "{{ path(routes.results) }}",
+                hasDatatable:  true,
+
+                entityName:    "{{ singular }}"
+            };
+            initializeCRUD(options);
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <title>Imagina | {{ sistema }}</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <link href="{{ asset('bundles/app/assets/img/favicon.ico') }}" rel="shortcut icon">
+    <!-- ================== BEGIN BASE CSS STYLE ================== -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=helvetica">
+    <link href="{{ asset('bundles/app/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/animate.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/style.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/style-responsive.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/theme/black.css') }}" rel="stylesheet" id="theme" />
+    <!-- ================== END BASE CSS STYLE ================== -->
+
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="{{ asset('bundles/app/assets/plugins/pace/pace.min.js') }}"></script>
+    <!-- ================== END BASE JS ================== -->
+    <!-- ================== BEGIN PAGE CSS STYLE ================== -->
+    <link href="{{ asset('bundles/app/assets/plugins/intro-js/introjs.css') }}" rel="stylesheet" />
+    <!-- ================== END PAGE CSS STYLE ================== -->
+</head>
+<body class="pace-top flat-black ">
+<!-- begin #page-loader -->
+<div id="page-loader" class="fade in"><span class="spinner"></span></div>
+<!-- end #page-loader -->
+
+<div class="login-cover">
+    <div class="login-cover-image"><!--<img src="{{ asset('bundles/app/assets/imagenes/fondo_login2.jpg') }}" data-id="login-cover-image" alt="" /> --></div>
+    <div class="login-cover-bg"></div>
+</div>
+<!-- begin #page-container -->
+<div id="page-container" class="fade">
+    <!-- begin login -->
+    <!-- <p><h1 class="animated fadeIn" style="color: white;font-family: Helvetica; font-size: 100px"><center>imagina</center></h1></p> -->
+    <!-- begin login -->
+    <div class="login login-v2" data-pageload-addclass="animated fadeIn" style="margin-top: 208px">
+        <!-- begin brand -->
+        <div class="login-header" style="background-color: black;position: fixed;margin-top: 130px">
+            <div class="brand">
+                <center><h1 class="animated fadeIn" style="color: white;font-family: Helvetica; font-size: 65px">imagina2</h1>
+                    <h2 style="color: white">IMOS</h2>
+                    <h3>IMAGINA OPERATIONAL SYSTEMS</h3>
+                    <div class="icon">
+                        <img src="{{ asset('bundles/app/assets/img/logo_imagina_engranage.png') }}" > <!--<i class="fa fa-sign-in"></i> -->
+                    </div>
+                </center>
+            </div>
+        </div>
+        <!-- end brand -->
+        <div class="login-content">
+            <form action="{{ path("fos_user_security_check") }}" method="POST" class="margin-bottom-0">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                {% if error %}
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        Información a  usuari@: <br>
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+                <div class="form-group m-b-20">
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input type="text" class="form-control input-lg" placeholder="Nombre de Usuario" id="username" name="_username" value="{{ last_username }}" required="required" />
+                </div>
+                <div class="form-group m-b-20">
+                    <label for="inputPassword" class="sr-only">Constraseña</label>
+                    <input type="password" class="form-control input-lg" placeholder="Contraseña" id="password" name="_password" required="required" />
+                </div>
+                <!--
+                <div class="checkbox m-b-20">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Recordarme
+                    </label>
+                </div>
+                -->
+                <div class="m-b-20">
+                    <a id="recuperar" href="{{ path('fos_user_resetting_request') }}">¿Olvidó su contraseña?</a>&nbsp &nbsp &nbsp<a id="intro0" class="btn btn-inverse" href="javascript:void(0);" onclick="javascript:startIntro(0);"><i class="fa fa-question-circle"></i></a>
+                </div>
+                <div class="login-buttons">
+                    <button class="btn btn-lg btn-inverse btn-block" type="submit">Ingresar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- end login -->
+</div>
+<!-- end page container -->
+
+<!-- ================== BEGIN BASE JS ================== -->
+<script src="{{ asset('bundles/app/assets/plugins/jquery/jquery-1.9.1.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery/jquery-migrate-1.1.0.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+<!--[if lt IE 9]>
+<script src="{{ asset('bundles/app/assets/crossbrowserjs/html5shiv.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/crossbrowserjs/respond.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/crossbrowserjs/excanvas.min.js') }}"></script>
+<![endif]-->
+<script src="{{ asset('bundles/app/assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery-cookie/jquery.cookie.js') }}"></script>
+<!-- ================== END BASE JS ================== -->
+<script src="{{ asset('bundles/app/assets/plugins/intro-js/intro.js') }}"></script>
+
+
+<!-- ================== BEGIN PAGE LEVEL JS ================== -->
+<script src="{{ asset('bundles/app/assets/js/login-v2.demo.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/js/apps.min.js') }}"></script>
+<!-- ================== END PAGE LEVEL JS ================== -->
+
+<script>
+    var sUrlDatatable =  "{{ asset('bundles/app/assets/js/datatables-lang-es.json') }}";
+    $(document).ready(function() {
+        App.init();
+        LoginV2.init();
+    });
+
+
+</script>
+</body>
+</html>

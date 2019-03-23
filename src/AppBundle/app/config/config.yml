@@ -1,0 +1,215 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: es
+    address: "%mailer_user%"
+    sendemail: false
+    sistema : "IMOS"
+    sender_name: "IMOS - Imagina"
+    upload_directory: '%kernel.root_dir%/../web/upload'
+    image_pdf: '%kernel.root_dir%/../web/upload/pdf.png'
+    upload_directory_cache: '%kernel.root_dir%/../web/upload/cache'
+    upload_directory_pdf: '%kernel.root_dir%/../web/upload/cache/pdf'
+    directorio_principal: '%kernel.root_dir%/../web/media/upload'
+    app.roles :
+           ROLE_SUPER_ADMIN : "ROLE_SUPER_ADMIN"
+           ROLE_ADMIN: "ROLE_ADMIN"
+           ROLE_ENCARGADO: "ROLE_ENCARGADO"
+           ROLE_ANALISTA: "ROLE_ANALISTA"
+           ROLE_USER : "ROLE_USER"
+    formats:              []
+
+framework:
+    #esi: ~
+    translator: { fallbacks: ['%locale%'] }
+    secret: '%secret%'
+    router:
+        resource: '%kernel.root_dir%/config/routing.yml'
+        strict_requirements: ~
+    form: ~
+    csrf_protection: ~
+    validation: { enable_annotations: true }
+    serializer: { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale: '%locale%'
+    trusted_hosts: ~
+    trusted_proxies: ~
+    session:
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        handler_id:  session.handler.native_file
+        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+    fragments: ~
+    http_method_override: true
+    assets: ~
+
+
+# Twig Configuration
+twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    globals:
+        upload_directory: '%directorio_principal%'
+        sistema: '%sistema%'
+        correosoporte: 'soporte@soporte.cl'
+        company: 'imagina'
+        sys_checker: 'Encargado'
+        sys_assistent: 'Analista'
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: '%database_host%'
+        port: '%database_port%'
+        dbname: '%database_name%'
+        user: '%database_user%'
+        password: '%database_password%'
+        charset: UTF8
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/../var/data/data.sqlite"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #path: '%database_path%'
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            StofDoctrineExtensionsBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: '%mailer_transport%'
+    host: '%mailer_host%'
+    username: '%mailer_user%'
+    password: '%mailer_password%'
+
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb' and 'couchdb'
+    firewall_name: main
+    user_class: AppBundle\Entity\Usuario
+    group:
+        group_class: AppBundle\Entity\Group
+        form:
+            type: 'appbundle_group_add_user'
+    from_email:
+        address: '%address%'
+        sender_name: '%sender_name%'
+    resetting:
+        retry_ttl: 7200 # Value in seconds, logic will use as hours
+        token_ttl: 86400
+        email:
+            from_email: # Use this node only if you don't want the global email address for the resetting email
+                address: '%address%'
+                sender_name: '%sender_name%'
+            template:   '@FOSUser/Resetting/email.txt.twig'
+    service:
+        mailer:                 fos_user.mailer.default
+        email_canonicalizer:    fos_user.util.canonicalizer.default
+        username_canonicalizer: fos_user.util.canonicalizer.default
+        token_generator:        fos_user.util.token_generator.default
+        user_manager:           fos_user.user_manager.default
+
+
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    gedmo_translatable:
+                        type: annotation
+                        prefix: Gedmo\Translatable\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
+                        alias: GedmoTranslatable # (optional) it will default to the name set for the mapping
+                        is_bundle: false
+                    gedmo_translator:
+                        type: annotation
+                        prefix: Gedmo\Translator\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translator/Entity"
+                        alias: GedmoTranslator # (optional) it will default to the name set for the mapping
+                        is_bundle: false
+                    gedmo_loggable:
+                        type: annotation
+                        prefix: Gedmo\Loggable\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                        alias: GedmoLoggable # (optional) it will default to the name set for the mappingmapping
+                        is_bundle: false
+                    gedmo_tree:
+                        type: annotation
+                        prefix: Gedmo\Tree\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
+                        alias: GedmoTree # (optional) it will default to the name set for the mapping
+                        is_bundle: false
+
+liip_imagine:
+    driver: "imagick"
+    resolvers:
+       default:
+          web_path:
+            web_root: "%kernel.root_dir%/../web"
+            cache_prefix: media/upload/cache
+
+
+    filter_sets:
+
+        # Prototype
+        home_thumb:
+            quality:              100
+            jpeg_quality:         ~
+            png_compression_level:  ~
+            png_compression_filter: ~
+            animated:             false
+            format:               jpg
+            cache:                ~
+            data_loader:          ~
+            default_image:        null
+            filters:
+
+                # Prototype
+                thumbnail:        { size: [120, 90], mode: outbound }
+
+        pdf:
+            quality:              100
+            jpeg_quality:         ~
+            png_compression_level:  ~
+            png_compression_filter: ~
+            animated:             false
+            format:               jpg
+            cache:                ~
+            data_loader:          my_custom_data_loader
+            default_image:        null
+            filters:
+
+                # Prototype
+                thumbnail:        { size : [120, 90], mode : outbound }
+
+    loaders:
+            default:
+                filesystem:
+                    data_root:
+                        - '%directorio_principal%'
+
+stof_doctrine_extensions:
+    default_locale: es_Es
+    orm:
+        default:
+          loggable: true
+    class:
+        loggable: AppBundle\Listener\MyLoggableListener
+
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: false
+    bundles:        [ ]
+    filters:
+        cssrewrite: ~
+

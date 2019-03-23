@@ -1,0 +1,88 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                <div class="panel-heading-btn">
+                    <a class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-2x fa-plus-circle"></i></a>
+                </div>
+                {% endif %}
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                        <tr>
+                            <th class="hide"></th>
+                            <th class="with-checkbox">
+                                <div class="checkbox checkbox-css">
+                                    <input type="checkbox" class="selectall" value="" id="selectall">
+                                </div>
+                            </th>
+                            <th class="hide">Estado</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                            <tr>
+                                <td class="hide">{{ entity.id }}</td>
+                                <td class="with-checkbox">
+                                    <div class="checkbox checkbox-css">
+                                        <input type="checkbox" value="{{ entity.id }}" data-val="{{ entity.name }}" class="chk" >
+                                        <label for="table_checkbox_2"></label>
+                                    </div>
+                                </td>
+                                <td class="hide">
+                                    {% if entity.enabled == 1 %}
+                                        <button class="btn btn-primary">Activo</button>
+                                    {% else %}
+                                        <button class="btn btn-default">Inactivo</button>
+                                    {% endif %}
+                                </td>
+                                <td>{{ entity.name }}</td>
+                                <td>
+                                    {{ entity.direccion }}
+                                </td>
+                                <td>
+                                    <a class="btn btn-inverse  btn-details disabled-entity" title="Detalles" data-id="{{ entity.id }}" data-enabled="{{ entity.enabled }}">
+                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                    </a>
+
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        var $selectAll = $('#selectall'); // main checkbox inside table thead
+        var $table = $('.table'); // table selector
+        var $tdCheckbox = $table.find('tbody input:checkbox'); // checboxes inside table body
+        var $tdCheckboxChecked = []; // checked checbox arr
+
+        //Select or deselect all checkboxes on main checkbox change
+        $selectAll.on('click', function () {
+            console.log('entro');
+            $tdCheckbox.prop('checked', this.checked);
+        });
+
+        //Switch main checkbox state to checked when all checkboxes inside tbody tag is checked
+        $tdCheckbox.on('change', function(){
+            $tdCheckboxChecked = $table.find('tbody input:checkbox:checked');//Collect all checked checkboxes from tbody tag
+            //if length of already checked checkboxes inside tbody tag is the same as all tbody checkboxes length, then set property of main checkbox to "true", else set to "false"
+            $selectAll.prop('checked', ($tdCheckboxChecked.length == $tdCheckbox.length));
+        })
+    });
+</script>

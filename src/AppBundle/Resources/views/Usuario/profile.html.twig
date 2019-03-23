@@ -1,0 +1,104 @@
+{% extends '::baseUsuarios.html.twig' %}
+{% block body %}
+    <div class="row m-t-1">
+            <div class="col-md-4 col-lg-3">
+                <div class="text-xs-center"><img src="{{ asset('bundles/app/assets/images/boy.png') }}" alt="" class="page-profile-v1-avatar border-round"></div>
+                <div class="panel panel-transparent">
+                    <div class="panel-heading p-x-1">
+                        <span class="panel-title">Estadisticas</span>
+                    </div>
+                    <div class="list-group m-y-1">
+                        <a href="#" class="list-group-item p-x-1 b-a-0">Última Conexión <strong>{{ app.user.lastLogin | date('d-m-Y') }}</strong> a las <strong>{{ app.user.lastLogin | date('H:i') }}</strong></a>
+                    </div>
+                </div>
+                <div class="panel panel-transparent">
+                    <div class="panel-heading p-x-1">
+                        <span class="panel-title">Contacto</span>
+                    </div>
+                    <div class="list-group m-t-1">
+                        <a href="#" class="list-group-item p-x-1 b-a-0"><i class="fa fa-envelope" style="color: #888"></i>&nbsp;&nbsp;&nbsp;{{ app.user.email }}</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="page-wide-block visible-xs visible-sm">
+
+            <div class="col-md-8 col-lg-9">
+                <h1 class="font-size-20 m-y-4">{{ app.user.nombres }} {{ app.user.apellidos }}</h1>
+                <ul class="nav nav-tabs tab-resize-nav" id="profile-tabs"><li class="dropdown tab-resize">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="tab-resize-icon"></span></a>
+                        <ul class="dropdown-menu"></ul>
+                    </li>
+                    <li class="active">
+                        <a href="#profile-board" data-toggle="tab">
+                            Información
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#seguridad" data-toggle="tab">
+                            Seguridad
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content tab-content-bordered p-a-0 bg-white">
+                    <div class="tab-pane fade in active" id="profile-board">
+                        <div class="panel-body">
+                            <div class="panel-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Nombre</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{ app.user.nombres }} {{ app.user.apellidos }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Email</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{ app.user.email }}</p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="seguridad">
+                        <div class="panel-body">
+                            <div class="panel-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Email</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static">{{ app.user.email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="grid-input-1" class="col-md-3 control-label">Contraseña Actual</label>
+                                        <div class="col-md-9">
+                                            <input type="password" class="form-control" id="grid-input-1" placeholder="Contraseña Actual">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="grid-input-1" class="col-md-3 control-label">Nueva Contraseña</label>
+                                        <div class="col-md-9">
+                                            <input type="password" class="form-control" id="grid-input-1" placeholder="Nueva Contraseña">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="grid-input-1" class="col-md-3 control-label">Repetir Contraseña</label>
+                                        <div class="col-md-9">
+                                            <input type="password" class="form-control" id="grid-input-1" placeholder="Repetir Contraseña">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn btn-success">Cambiar Contraseña</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <h2 style="font-size: 14px" class="panel-title">{{ tarea.document.name }} de proyecto: {{ tarea.proyectogo.name }} {{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities-notes" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Comentario</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>{{ entity.createdby.fullname }}</td>
+                            <td>{{ entity.comment }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

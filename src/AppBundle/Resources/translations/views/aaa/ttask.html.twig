@@ -1,0 +1,111 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Notas</th>
+                        <th>Documento</th>
+                        <th>Nombre proyecto</th>
+                        <th>Estado</th>
+                        <th>Tiempo</th>
+                        <th>Archivo</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                            {% include 'task.html.twig' %}
+                        {% elseif is_granted('ROLE_ECARGADO') %}
+                            {% if entity.incharge.fullname == app.user.fullname %}
+                                <tr>
+                                    <td><a href="javascript:void(0)" onclick="newnote({{ entity.id }})" class="btn btn-medium btn-icon btn-circle btn-inverse"><i class="ion-document-text"></i></a></td>
+                                    <td><a href="javascript:void(0)" onclick="viewnotes({{ entity.id }})" class="btn btn-medium">{{ entity.document.name }}</a></td>
+                                    <td>
+                                        {% if entity.proyecto is not null %}
+                                            {{ entity.proyecto.nombre }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entity.estado }}</td>
+                                    <td>
+                                        {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                            {%  set dias =  date(entity.createdat).diff(date("now"))  %}
+                                            Solicitado hace {{ dias.days }} días
+                                        {% elseif entity.estado == "REVISION" %}
+                                            Esperando Revisión
+                                        {% elseif entity.estado == "APROBADO" %}
+                                            {%  set dias =  date(entity.createdat).diff(date(entity.dateCompleted))  %}
+                                            Completado en {{ dias.days }} días
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if entity.file is null %}
+                                            Sin Archivo
+                                        {% else %}
+                                            <a href="{{ asset('media/Task/' ~ entity.file) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if entity.file is null %}
+                                            <a href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})">Subir Archivo</a>
+                                        {% else %}
+                                            {% if entity.estado == "REVISION" %}
+                                                <a href="javascript:void(0)" onclick="rejecttask({{ entity.id }})" .class="btn btn-medium btn-icon btn-circle btn-inverse"><i class="ion-close"></i></a>
+                                                <a href="javascript:void(0)" onclick="approvetask({{ entity.id }})" class="btn btn-medium btn-icon btn-circle btn-white"><i class="ion-checkmark"></i></a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% elseif is_granted('ROLE_ANALISTA') %}
+                            {% if entity.analyst.fullname == app.user.fullname %}
+                                <tr>
+                                    <td><a href="javascript:void(0)" onclick="newnote({{ entity.id }})" class="btn btn-medium btn-icon btn-circle btn-inverse"><i class="ion-document-text"></i></a></td>
+                                    <td><a href="javascript:void(0)" onclick="viewnotes({{ entity.id }})" class="btn btn-medium">{{ entity.document.name }}</a></td>
+                                    <td>
+                                        {% if entity.proyecto is not null %}
+                                            {{ entity.proyecto.nombre }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entity.estado }}</td>
+                                    <td>
+                                        {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
+                                            {%  set dias =  date(entity.createdat).diff(date("now"))  %}
+                                            Solicitado hace {{ dias.days }} días
+                                        {% elseif entity.estado == "REVISION" %}
+                                            Esperando Revisión
+                                        {% elseif entity.estado == "APROBADO" %}
+                                            {%  set dias =  date(entity.createdat).diff(date(entity.dateCompleted))  %}
+                                            Completado en {{ dias.days }} días
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if entity.file is null %}
+                                            Sin Archivo
+                                        {% else %}
+                                            <a href="{{ asset('media/Task/' ~ entity.file) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if entity.file is null %}
+                                            <a href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})">Subir Archivo</a>
+                                        {% else %}
+                                            Esperando
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="nuevoresultado" >
+
+</div>

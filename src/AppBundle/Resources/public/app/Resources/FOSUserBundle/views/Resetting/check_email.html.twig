@@ -1,0 +1,9 @@
+{% extends "::baseindex.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block formulario %}
+<p>
+{{ 'resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime})|nl2br }}
+</p>
+{% endblock %}

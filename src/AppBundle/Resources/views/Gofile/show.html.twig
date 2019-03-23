@@ -1,0 +1,52 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- begin panel -->
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">{{ singular }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>
+                                <a href="{{ asset('media/Task/' ~ entity.file) }}" download="{{ entity.link }}{{ entity.file |slice(-4) }}" class="btn btn-xs"><i class="fa fa-download"></i>  {{ entity.link }}</a><a href="javascript:void(0)" onclick="deleteFilesGo({{ entity.id }})" class="btn btn-sm btn-danger"><i class="fa fa-unlink"></i>  Eliminar</a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteFilesGo(id){
+
+        var path = "{{ path('app_gofile_deletefile',{ 'id': 'idElement'}) }}";
+        path = path.replace('idElement', id);
+
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function (results) {
+                //console.log(results);return false;
+                swal("Eliminado!", "El archivo ha sido eliminado.", "success");
+                bootbox.hideAll();
+                viewFilesTask({{ idtask }});
+            }
+        });
+
+    }
+</script>

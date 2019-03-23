@@ -1,0 +1,399 @@
+{% block stylesheets %}
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <link href="{{ asset('bundles/app/assets/plugins/jstree/dist/themes/default/style.min.css') }}" rel="stylesheet" />
+    <!-- ================== END PAGE LEVEL JS ================== -->
+    <style>
+        .gritter-light .gritter-close {
+            background-image: none;
+            color: #444;
+        }
+          elemento {
+              display: block;}
+    </style>
+{% endblock %}
+<hr>
+<div class="row">
+    <div class="row">
+        <div class="col-md-12"><label>Seleccione {{ sys_checker }}</label></div>
+        <div class="col-md-9">
+
+            <select id="checker" name="checker[]" multiple class="form-control">
+                <option value="0">Seleccionar</option>
+                {% for entity in checker %}
+                    <option value="{{ entity.id }}">{{ entity.fullname }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-offset-1 col-md-2">
+            <button id="addchecker" class="btn btn-inverse">
+                Asignar
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12"><label>Seleccione {{ sys_assistent }}</label></div>
+        <div class="col-md-9">
+
+            <select id="assistent" name="assistent[]" multiple class="form-control">
+                <option value="0">Seleccionar</option>
+                {% for entity in assistent %}
+                    <option value="{{ entity.id }}">{{ entity.fullname }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-offset-1 col-md-2">
+            <button id="addassistent" class="btn btn-inverse">
+                Asignar
+            </button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">Arbol de {{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <div id="proyectotree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ asset('bundles/app/assets/plugins/jstree/dist/jstree.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/js/ui-tree.demo.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/bootstrap-sweetalert/sweetalert.min.js') }}"></script>
+
+<script>
+    //var newjson = "";
+    //var data = [];
+    var data = "[";
+    var child = false;
+
+    $(document).ready(function() {
+        $('#assistent').select2(
+            {width: '100%' }
+        );
+
+        $('#checker').select2(
+            {width: '100%' }
+        );
+        {% if entities|length > 0 %}
+
+        var tree = {{ tree|json_encode|raw }};
+
+        var all = {{ task|json_encode|raw }};
+
+
+        $.each(tree, function(i, item){
+            //console.log('tree '+i);
+            data = data+ "{";
+            firstfunction(item, all);
+            data = data + '},';
+        });
+
+        if(child) {
+            data = data + ']';
+        }else{
+
+            data = term(data,'');
+
+            data = data + ']';
+        }
+        data = replaceAll(', {}','', data);
+        data = replaceAll('},]','}]', data);
+        //console.log(data);return false;
+        data =  JSON.parse(data);
+
+
+        //console.log(data);return false;
+        $('#proyectotree').jstree({
+            "core": {
+                "animation": 0,
+                "check_callback": false,
+                "themes": {"default": true},
+                "data": data
+            },
+            "types": {
+                "#": {"max_children": 50, "max_depth": 50, "valid_children": ["root"]},
+                "root": {"icon": "fa fa-folder text-warning fa-lg inverse", "valid_children": ["default"]},
+                "default": {"icon": "far fa-2x fa-fw m-r-10 fa-folder", "valid_children": ["default", "file"]},
+                "file": {"icon": "fas fa-lg fa-fw m-r-10 fa-file-alt", "valid_children": []}
+            },
+            "plugins": [{% if is_granted('ROLE_SUPER_ADMIN') %}"dnd","checkbox", "contextmenu",{% endif %} "unique","search", "state", "types", "wholerow"]
+            , "checkbox": {
+                three_state : false, // to avoid that fact that checking a node also check others
+                whole_node : false,  // to avoid checking the box just clicking the node
+                tie_selection : false // for checking without selecting and selecting without checking
+            },
+            "contextmenu" : {
+                "items" : customMenuProyecto
+            }
+        });
+        {% endif %}
+    });
+
+    function firstfunction(level, task){
+        //console.log(task);
+        var isfile = level.isfile;
+        var filetype = "default";
+        if (isfile){
+            filetype = "file";
+        }
+        var strline = "";
+        var taskdocument = level.taskdocuments[0];
+        //var uno = JSON.parse(all);
+
+        //var test = $.inArray(level.id, all.document);
+        //console.log(uno);
+        if(level.isfile) {
+            var textassistent = "";
+            var textchecker = "";
+
+
+
+            var checkers = taskdocument.checkers;
+            var assistents = taskdocument.assistents;
+            console.log(taskdocument);
+            console.log(assistents);
+            if (checkers.length > 0) {
+                textchecker = "<strong>{{ sys_checker|slice(0, 4)  }} :</strong>";
+                $.each(checkers, function (i, item) {
+                    //console.log(item);
+                    textchecker = textchecker + " <strong>" + item.checker.nombres + " " + item.checker.apellidos+"</strong>,";
+                });
+                textchecker = textchecker.substring(0, textchecker.length-1);
+            }
+            if (assistents.length > 0) {
+                textassistent = "<strong>{{ sys_assistent|slice(0, 3)  }} :</strong>";
+                $.each(assistents, function (i, item) {
+                    //console.log(item);
+                    textassistent = textassistent + " <strong>" + item.assistent.nombres + " " + item.assistent.apellidos +"</strong>,";
+                });
+                    textassistent = textassistent.substring(0, textassistent.length-1);
+            }
+            //console.log(checkers);
+             strline = '"id" : "' + level.id + '", "text" : "' + level.name + " " + textchecker + " // " + textassistent +'", "type" : "' + filetype + '", "iddoc" : "' + taskdocument.id + '", "state" : { "checked" : false }';
+        }else {
+
+             //strline = '"id" : "' + level.id + '", "text" : "' + level.name + '", "type" : "' + filetype + '", "iddoc" : "' + taskdocument.id + '"';
+             strline = '"id" : "' + level.id + '", "text" : "' + level.name + '", "type" : "' + filetype + '", "iddoc" : "' + taskdocument.id + '", "state" : { "disabled" : true }';
+        }
+        if(level['__children'].length > 0){
+            child = true;
+            data = data +strline+ ' ,"children" : [ {';
+            var newchildren = level['__children'];
+
+            $.each(newchildren, function(i,item){
+                if(i > 0){
+                    data =data + '},{';
+                }
+                firstfunction(item, task);
+            });
+            data =data + '} ] }, {';
+        }else {
+            data = data + strline;
+        }
+    }
+
+    function term(str, char) {
+        var xStr = str.substring(0, str.length - 1);
+        return xStr + char;
+    }
+    //console.log(data);
+
+
+
+
+    function emptybutton(){
+        //crear mensaje de seleccion de carpeta
+
+        $('#emptyvalue').removeClass('hide');
+        error = true;
+        setTimeout(function() {
+            $('#emptyvalue').addClass("hide");
+        }, 6000);
+        return false;
+    }
+
+    function replaceAll(find, replace, str)
+    {
+        while( str.indexOf(find) > -1)
+        {
+            str = str.replace(find, replace);
+        }
+        return str;
+    }
+
+    $('#addchecker').on('click', function(){
+        guardar('checker');
+        loadTree({{ idProyecto }});
+        //console.log(checked_ids);
+    });
+
+    $('#addassistent').on('click', function(){
+        guardar('assistent');
+        loadTree({{ idProyecto }});
+    });
+
+    function guardar(selection){
+        var checked_ids = [];
+
+        var result = $('#proyectotree').jstree('get_checked', true);
+        $.each(result, function() {
+            checked_ids.push(this.id);
+        });
+
+        var combo = $('#'+selection+' option:selected').length;
+
+        var messageselection= "";
+        if(selection === 'checker'){
+            messageselection = '{{ sys_checker }}';
+        }else{
+            messageselection = '{{ sys_assistent }}';
+        }
+
+        if(combo == 0){
+            checkLoadingDevel(false);
+            var title = "Campo vacio";
+            var message = 'Debes seleccionar ' + messageselection ;
+            var alerta = 'alert-danger';
+            messagesDevelSwal(alerta, message, title);
+        }
+        if(checked_ids.length == 0){
+            checkLoadingDevel(false);
+            var title = "Campo vacio";
+            var message = 'Debes seleccionar documentos';
+            var alerta = 'alert-danger';
+            messagesDevelSwal(alerta, message, title);
+        }
+
+        if(checked_ids.length != 0 && combo != 0 ) {
+            $('#'+selection+' option:selected').each(function () {
+                var nombre = $(this).text();
+                var idselection = $(this).val();
+
+                $.each(result, function() {
+                    var chkid = this.id;
+                    var chkname = this.text;
+                    //console.log(chkid);return false;
+                    var path= "";
+                    if(selection === 'checker'){
+                         path = "{{ path('app_gochecker_newasign',{ 'idTask': 'idElement', 'idSelection': 'idVal', 'idProyecto': 'id' }) }}";
+                    }else{
+                         path = "{{ path('app_goassistent_newasign',{ 'idTask': 'idElement', 'idSelection': 'idVal', 'idProyecto': 'id' }) }}";
+                    }
+                    path = path.replace('idElement', chkid);
+                    path = path.replace('idVal', idselection);
+                    path = path.replace('id', {{ idProyecto }});
+
+                    $.ajax({
+                        type: 'POST',
+                        async: true,
+                        url: path,
+                        success: function (results) {
+                            if (results === 'success') {
+                                var title = "Guardado Correctamente";
+                                var message = 'Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' .';
+                                var alerta = 'alert-success';
+                                messageDevelGritter(alerta, message, title);
+                            } else if (results === 'duplicate') {
+                                var title = "Acción no ejecutada";
+                                var message = 'No Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' por que ya existe en la base de datos.';
+                                var alerta = 'alert-danger';
+                                messageDevelGritter(alerta, message, title);
+                            } else if(results === 'folder'){
+                                var title = "No es posible proceder";
+                                var message = 'No Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' por que es una carpeta.';
+                                var alerta = 'alert-danger';
+                                messageDevelGritter(alerta, message, title);
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+                });
+            });
+
+
+        }
+        $("#"+selection+" > option").removeAttr("selected");
+        $('input[type=checkbox]').prop('checked',false);
+        checkLoadingDevel(false);
+
+    }
+
+    function customMenuProyecto(node) {
+        var tree = $("#proyectotree").jstree(true);
+        var items = {
+            delete : {
+                "label" : "Eliminar2",
+                "action" : function(data) {
+                    swal({
+                        title: "Está seguro que desea eliminar el archivo/carpeta?",
+                        text: "Despues de eliminar no será posible recuperar el archivo/carpeta!",
+                        type: "warning",
+                        buttons:
+                            {
+                                cancel: {
+                                    text: "Cancel",
+                                    value: null,
+                                    visible: true,
+                                    className: "",
+                                    closeModal: true,
+                                },
+                                confirm: {
+                                    text: "OK",
+                                    value: "test",
+                                    visible: true,
+                                    className: "",
+                                    closeModal: true
+                                }
+                            },
+                    } ).then((isConfirm) =>
+                        {
+                            if (isConfirm) {
+                                console.log('tree');
+                                deleteNode(node);
+                                swal("Eliminado!", "El archivo/carpeta ha sido eliminado.", "success");
+                            } else {
+                                swal("Cancelado", "no se han realizado acciones :)", "error");
+                            }
+                        }
+                    )
+                }
+            },
+        };
+        return items;
+    }
+
+    function deleteNode( data) {
+
+        var id = data.original.iddoc;
+        //console.log('delete');
+        //console.log(id);
+        //console.log(data);return false;
+        var path = "{{ path('app_proyectogo_tree_delete', { 'id': 'idElemento' }) }}";
+        path = path.replace('idElemento', id);
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function (results) {
+                loadTree({{ idProyecto }});
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
+</script>

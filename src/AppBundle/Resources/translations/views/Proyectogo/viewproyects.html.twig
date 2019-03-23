@@ -1,0 +1,36 @@
+
+<hr>
+<div class="intro-table-proyectos row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                    <div class="panel-heading-btn">
+                        <a class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-2x fa-plus-circle"></i></a>
+                    </div>
+                {% endif %}
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Inmobiliaria</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                            <tr>
+                                <td><a href="javascript:void(0)" onclick="viewTasks('idproyecto',{{ entity.id }})"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-home"></i></span>{{ entity.name }}</a></td>
+                                <td>
+                                    {{ entity.inmobiliaria }}
+                                </td>
+                            </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

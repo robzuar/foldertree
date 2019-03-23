@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- begin panel -->
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">{{ singular }}</h2>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Comuna</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.comuna is not empty %}{{ entity.comuna.name }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Nombre Anteproyecto</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.nombre is not empty %}{{ entity.nombre }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Fecha Ingreso</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.dateadmision is not empty %}{{ entity.dateadmision|date("d/m/Y") }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">1° Observación Ingreso</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.observationone is not empty %}{{ entity.observationone }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">2° Observación Ingreso</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.observationtwo is not empty %}{{ entity.observationtwo }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">N° Resolución Aprobación</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.resolution is not empty %}{{ entity.resolution }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Fecha de Resolución Aprobación</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.dateresolution is not empty %}{{ entity.dateresolution|date("d/m/Y") }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Fecha de Vencimiento</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.dateexpiration is not empty %}{{ entity.dateexpiration|date("d/m/Y") }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Nombre Revisor Independiente</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.revisor is not empty %}{{ entity.revisor }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Comentarios</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.comments is not empty %}{{ entity.comments }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Archivo PDF</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.file is not empty %}{{ entity.file }}{% else %} Sin Archivo {% endif %}</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+
+<!-- START @HEAD -->
+<head>
+    <!-- START @META SECTION -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Blankon is a theme fullpack admin template powered by Twitter bootstrap 3 front-end framework. Included are multiple example pages, elements styles, and javascript widgets to get your project started.">
+    <meta name="keywords" content="admin, admin template, bootstrap3, clean, fontawesome4, good documentation, lightweight admin, responsive dashboard, webapp">
+    <meta name="author" content="Djava UI">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="{{ pathToWeb }}/bundles/app/assets/admin/css/reset.css" rel="stylesheet">
+    <link href="{{ pathToWeb }}/bundles/app/assets/admin/css/layout.css" rel="stylesheet">
+    <link href="{{ pathToWeb }}/bundles/app/assets/admin/css/components.css" rel="stylesheet">
+    <link href="{{ pathToWeb }}/bundles/app/assets/admin/css/plugins.css" rel="stylesheet">
+    {# <link href="{{ asset('bundles/app/assets/admin/css/themes/default.theme.css') }}" rel="stylesheet" id="theme"> #}
+    <link href="{{ pathToWeb }}/bundles/app/assets/admin/css/themes/purple.theme.css" rel="stylesheet" id="theme">
+    <link href="{{ pathToWeb }}/bundles/app/assets/admin/css/custom.css" rel="stylesheet">
+    <link href="{{ pathToWeb }}/bundles/app/assets/global/plugins/bower_components/dropzone/downloads/css/dropzone.css" rel="stylesheet">
+    {% block stylesheet %}
+    {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+
+<body class="page-session page-sound page-header-fixed page-sidebar-fixed demo-dashboard-session">
+
+        <div class="body-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+
+{% block javascripts %}
+
+{% endblock %}
+</body>
+<!--/ END BODY -->
+
+</html>

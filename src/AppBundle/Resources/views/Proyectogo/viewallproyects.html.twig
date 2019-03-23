@@ -1,0 +1,47 @@
+
+<hr>
+<div class="intro-table-proyectos row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                        <a class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-2x fa-plus-circle"></i></a>
+                    {% endif %}
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Inmobiliaria</th>
+                        <th>Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>
+
+                                <a href="javascript:void(0)" onclick="viewTasks({{ entity.id }})"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-building"></i></span>{{ entity.name }}</a>
+                            </td>
+                            <td>
+                                {{ entity.inmobiliaria }}
+                            </td>
+                            <td>
+                                {% if entity.startedat is null %}
+                                    BORRADOR
+                                {% else %}
+                                    CONFIGURADO
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

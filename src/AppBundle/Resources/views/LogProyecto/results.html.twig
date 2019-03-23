@@ -1,0 +1,74 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    <a href="#" class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-2x fa-plus-circle"></i></a>
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                        <tr>
+                            <th class="hide"></th>
+                            <th>Proyecto</th>
+                            <th>Valor Actual</th>
+                            <th>Valor Anterior</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {% if entity.action == "update" %}
+                            <tr>
+                                <td class="hide">{{ entity.id }}</td>
+                                <td>
+                                    {% for proyecto in proyectos %}
+                                        {% if entity.objectId == proyecto.id %}
+                                            {{ proyecto.nombre }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% for key, cambio in entity.data %}
+
+                                {% if key == "new" %}
+                                    <td>
+                                        {% for key, valor in cambio %}
+                                            {% if key == 'dateend' %}
+                                                Fecha termino de obra: {{ valor|date('d-m-Y') }} <br>
+                                            {% elseif key == 'dateescritura' %}
+                                                Fecha de escrituración: {{ valor|date('d-m-Y') }} <br>
+                                            {% elseif key == 'datedelivery' %}
+                                                Fecha de Entrega: {{ valor }} <br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+
+                                {% if key == "old" %}
+                                    <td>
+                                        {% for key, valor in cambio %}
+                                            {% if key == 'dateend' %}
+                                                Fecha termino de obra: {{ valor|date('d-m-Y') }} <br>
+                                            {% elseif key == 'dateescritura' %}
+                                                Fecha de escrituración: {{ valor|date('d-m-Y') }} <br>
+                                            {% elseif key == 'datedelivery' %}
+                                                Fecha de Entrega: {{ valor }} <br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                                <td>{% if entity.createdBy is not null %}{{ entity.createdBy.fullName }}{% endif %}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

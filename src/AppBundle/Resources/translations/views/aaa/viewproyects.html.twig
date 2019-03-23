@@ -1,0 +1,57 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                            <tr>
+                                <td><a href="javascript:void(0)" onclick="viewTaskByProyect({{ entity.id }},'{{- valencargado|escape("js") -}}')">{{ entity.name }}</a></td>
+                                <td>
+                                    {{ entity.direccion }}
+                                    {% if entity.incharge is not null %}
+                                        <br><strong> {{ sys_incharge }}:</strong> {{ entity.incharge.fullname }}
+                                    {% endif %}
+                                    {% for analyst in analysts %}
+                                        {% if entity.id == analyst.proyectogo.id %}
+                                            <br><strong> {{ sys_analyst }}:</strong> {{ analyst.analyst.fullname }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            {% if entity.enabled == 1 %}
+                                <tr>
+                                    <td><a href="javascript:void(0)" onclick="viewTaskByProyect({{ entity.id }},'{{- valencargado|escape("js") -}}')">{{ entity.name }}</a></td>
+                                    <td>{{ entity.direccion }}
+                                        {% if entity.incharge is not null %}
+                                            <br><strong> {{ sys_incharge }}:</strong> {{ entity.incharge.fullname }}
+                                        {% endif %}
+                                        {% for analyst in analysts %}
+                                            {% if entity.id == analyst.proyectogo.id %}
+                                                <br><strong> {{ sys_analyst }}:</strong> {{ analyst.analyst.fullname }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

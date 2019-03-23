@@ -1,0 +1,8 @@
+# Guillermo Quinteros <gu.quinteros@gmail.com> 2015
+# validators.es.yml
+not_blank: Este campo no puede estar vacío.
+date.format: d/m/Y
+analyst: Encargado
+incharge: Revisor
+user.selectanalyst: Seleccionar Encargado
+user.selectincharge: Seleccionar Revisor

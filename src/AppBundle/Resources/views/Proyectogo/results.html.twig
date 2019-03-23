@@ -1,0 +1,135 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+
+                    <div class="panel-heading-btn">
+
+                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                        <a class="btn btn-medium btn-icon btn-circle btn-white btn-add"><i class="fa fa-1x fa-plus-circle"></i></a>
+                        {% endif %}
+                    </div>
+
+                <h2 style="font-size: 14px" class="panel-title">{{ plural }}</h2>
+            </div>
+
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Nombre</th>
+                        <th>Inmobiliaria</th>
+                        <th>Inicio</th>
+                        <th>Detalles</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                            <tr>
+                                <td>
+                                    <!--{% if entity.enabled == 1 %}<button class="btn btn-primary">Activo</button>{% else %}<button class="btn btn-default">Inactivo</button>{% endif %}-->
+                                    {% if entity.startedat is null %}
+                                        BORRADOR
+                                    {% else %}
+                                        CONFIGURADO
+                                    {% endif %}
+                                </td>
+                                <td><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-home"></i></span>{{ entity.name }}</td>
+                                <td>
+                                    {{ entity.inmobiliaria }}
+                                </td>
+                                <td>
+                                    {% if entity.startedat is null %}
+                                        {{ render(controller('AppBundle:Proyectogo:check', { 'id':  entity.id })) }}
+                                    {% else %}
+                                        CONFIGURADO
+                                    {% endif %}
+                                </td>
+                                <td class="col-md-2">
+                                    <a class="btn-details disabled-entity" title="Detalles" data-id="{{ entity.id }}" data-enabled="{{ entity.enabled }}">
+                                        <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-eye" aria-hidden="true"></i></span>Detalles
+                                    </a>
+                                    <br>
+                                    <a class="btn-view" title="ver árbol" data-id="{{ entity.id }}">
+                                        <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-list-alt" aria-hidden="true"></i></span>Arbol
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        var $selectAll = $('#selectall'); // main checkbox inside table thead
+        var $table = $('.table'); // table selector
+        var $tdCheckbox = $table.find('tbody input:checkbox'); // checboxes inside table body
+        var $tdCheckboxChecked = []; // checked checbox arr
+
+        //Select or deselect all checkboxes on main checkbox change
+        $selectAll.on('click', function () {
+            console.log('entro');
+            $tdCheckbox.prop('checked', this.checked);
+        });
+
+        //Switch main checkbox state to checked when all checkboxes inside tbody tag is checked
+        $tdCheckbox.on('change', function(){
+            $tdCheckboxChecked = $table.find('tbody input:checkbox:checked');//Collect all checked checkboxes from tbody tag
+            //if length of already checked checkboxes inside tbody tag is the same as all tbody checkboxes length, then set property of main checkbox to "true", else set to "false"
+            $selectAll.prop('checked', ($tdCheckboxChecked.length == $tdCheckbox.length));
+        })
+    });
+
+    $('.btn-view').on('click', function(){
+        var id = $(this).data('id');
+
+       loadTree(id);
+    });
+
+    function startProyect(id){
+        loading(true);
+
+        var path = "{{ path('app_proyectogo_start',{ 'id': 'idElemento' }) }}";
+        path = path.replace('idElemento', id);
+
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function(results) {
+                loading(false);
+               if(results === 'success'){
+loadTable();
+               }
+            },
+            error: function(e){
+                console.log(e);
+            }
+        });
+    }
+
+    function getButtonState(id) {
+        var path = "{{ path('app_proyectogo_check',{ 'id': 'idElemento' }) }}";
+        path = path.replace('idElemento', id);
+
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: path,
+            success: function(results) {
+                loading(false);
+            },
+            error: function(e){
+                console.log(e);
+            }
+        });
+    }
+</script>

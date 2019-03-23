@@ -1,0 +1,37 @@
+{% extends '::base_ajax.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <!-- begin panel -->
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn">
+                    </div>
+                    <h2 style="font-size: 14px" class="panel-title">{{ singular }}</h2>
+                </div>
+                <div class="panel-body">
+                    <form id="the-form" action="{{ path('app_go_inchargetoproyect', { 'id': id }) }}" method="POST">
+                        <div class="panel panel-inverse">
+                            <div class="panel-body">
+                                <select id="formulario" name="proyectos[]" multiple class="form-control">
+                                    {% for entity in entities %}
+                                        <option value="{{ entity.id }}">{{ entity.name }} {% if entity.incharge is not null %}<strong> / {{ sys_incharge }}:</strong>{{ entity.incharge.fullname }}{% endif %} </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" align="right">
+                            <button id="submit" type="submit" class="btn btn-primary btn-medium">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <script>
+        setTimeout(function() {
+            $('#formulario').select2(
+                {width: '100%' }
+            );
+        }, 300);
+    </script>
+{% endblock %}

@@ -1,0 +1,48 @@
+
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <h2 style="font-size: 14px" class="panel-title"><strong>Archivos de proyecto: {{ tarea.proyectogo.name }}</strong> / Tarea: {{ tarea.document.name }} </h2>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities-notes" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Archivo</th>
+                        <th>Subido por</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for file in files %}
+                        <tr>
+                            <td>
+                                <a href="{{ asset('media/Task/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-download"></i></span>{{ file.file }}</a>
+                            </td>
+                            <td>{{ file.createdby.fullname }}</td>
+                            <td>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown navbar-user">
+                                        <a style="color: black" href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fas fa-lg fa-fw m-r-10 fa-ellipsis-v"></i>
+                                            <span> </span>
+                                        </a>
+                                        <ul class="dropdown-menu animated fadeInLeft">
+                                            <li class="arrow"></li>
+                                            <li>
+                                                <a onclick="eliminar_archivo({{ file.id }})" title="Eliminar Archivo"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-trash"></i></span>Eliminar Archivo</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

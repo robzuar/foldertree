@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- begin panel -->
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                </div>
+                <h2 style="font-size: 14px" class="panel-title">{{ singular }}</h2>
+            </div>
+            <div class="panel-body">
+                <form id="the-form-file" action="{{ path('app_anteproyecto_uploadfile', { 'id': entity.id }) }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Nombre Anteproyecto</label>
+                        <div class="col-md-9">
+                            <a class="form-control">{% if entity.nombre is not empty %}{{ entity.nombre }}{% else %} Sin Valor {% endif %}</a>
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label>Nombre Archivo</label>
+                        <input id="fileupload" type="file" name="fileupload"  accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.gif,.xls,.xlsx,.ppt,.pptx" multiple>
+                    </div>
+                    <div id="div-submit" class="col-md-6" align="right">
+                        <a class="btn btn-default" onclick="loadTable();"><i class="fa fa-arrow-left"></i> Volver</a>
+                        <button type="submit" class="btn btn-primary" ><i class="fa fa-arrow-left"></i> Editar</button>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

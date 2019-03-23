@@ -1,0 +1,242 @@
+
+
+{% if proyectoview == 1 %}
+    <ol class="breadcrumb pull-right">
+        <li>
+            <a href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+        </li>
+        <li class="active"><span class="glyphicon glyphicon-users"></span>{{ entidad.title }}</li>
+    </ol>
+
+    <h4 class="page-header">
+        {% for menu in menus %}
+            <span class="text-muted font-weight-light"><i class="page-header-icon ion-ios-keypad"></i>{{ menu.title }}/</span>
+        {% endfor %}
+    </h4>
+    <hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    <button id="volverfolder" type="button"  onclick="loadTree();" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-arrow-left"></i></button>
+                    {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN') %}
+                        {% if proyecto is  null %}
+                            <button id="agregardatosproyecto" type="button"  onclick="addProyecto({{ idfolder }});" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-2x fa-plus-circle"></i></button>
+                        {% else %}
+                            <button id="editardatosproyecto" type="button"  onclick="editProyecto({{ proyecto.id}} , {{ proyecto.category.id }});" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-edit"></i></button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <h1 style="font-size: 14px" class="panel-title"><i class="fa fa-2x fa-building"></i>
+                    {% for menu in menus %}
+                        {{ menu.title }}/
+                    {% endfor %}
+                </h1>
+            </div>
+            <div class="panel-body">
+                {% if proyecto is not null %}
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label style="text-align:left;"  class="col-md-1 control-label">Proyecto</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.nombre }}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-1 control-label">Dirección</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.direccion}}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-1 control-label">Inmobiliaria</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.inmobiliaria }}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-1 control-label">Rut</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.rut}}"/>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-2 control-label">Pisos</label>
+                            <div class="col-md-2">
+                                <input class="form-control" disabled value="{{ proyecto.pisos}}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-2 control-label">Deptos</label>
+                            <div class="col-md-2">
+                                <input class="form-control" disabled value="{{ proyecto.departamentos}}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-2 control-label">Bodegas</label>
+                            <div class="col-md-2">
+                                <input class="form-control" disabled value="{{ proyecto.bodegas}}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-2 control-label">Subterraneos</label>
+                            <div class="col-md-2">
+                                <input class="form-control" disabled value="{{ proyecto.subterraneos}}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-2 control-label">Estacionamientos Vendibles</label>
+                            <div class="col-md-2">
+                                <input class="form-control" disabled value="{{ proyecto.estacionamientos}}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-2 control-label">Estacionamientos Visita</label>
+                            <div class="col-md-2">
+                                <input class="form-control" disabled value="{{ proyecto.estacionamientosVisita}}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-1 control-label">Fecha Termino Obra</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.dateend|date('d-m-Y') }}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-1 control-label">Fecha de escrituración</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.dateescritura|date('d-m-Y') }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-1 control-label">Fecha Término Obra Proyectada</label>
+                            <div class="col-md-11">
+                                <input class="form-control" disabled value="{{ proyecto.dateendtext }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-1 control-label">Fecha Entrega</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.datedelivery }}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-1 control-label">Fecha Ultima Cuota</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.datelast|date('d-m-Y') }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-1 control-label">Arquitecto</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.arquitecto }}"/>
+                            </div>
+                            <label style="text-align:left;" class="col-md-1 control-label">Supervisor</label>
+                            <div class="col-md-5">
+                                <input class="form-control" disabled value="{{ proyecto.supervisor }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="text-align:left;" class="col-md-1 control-label">Estado</label>
+                            <div class="col-md-11">
+                                <input class="form-control" disabled value="{{ proyecto.estado }}"/>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    Debe presionar el botón para agregar los parametros del proyecto.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% endif %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <div class="panel-heading-btn">
+                    <button id="volverfolder" type="button"  onclick="loadTree();" class="btn btn-medium btn-icon btn-circle btn-white"><i class="fa fa-arrow-left"></i></button>
+                    {% if is_granted('ROLE_SUPER_ADMIN') or  is_granted('ROLE_ADMIN')  %}
+                        <button id="subirarchivos" type="button"  onclick="addFile({{ idfolder }});" class="btn btn-medium btn-icon btn-circle btn-white new-file"><i class="fa fa-upload"></i></button>
+                        <a id="deleteall" onclick="delete_all({{ idfolder }})" class="btn btn-medium btn-icon btn-circle btn-danger"><i class="fa fa-trash-alt"></i></a>
+                    {% elseif isencargado == 1 %}
+                        <button id="subirarchivos" type="button"  onclick="addFile({{ idfolder }});" class="btn btn-medium btn-icon btn-circle btn-white new-file"><i class="fa fa-upload"></i></button>
+                    {% endif %}
+                </div>
+                <h1 style="font-size: 14px" class="panel-title"><i class="fa fa-2x fa-file-o"></i>
+                    {% for menu in menus %}
+                        {{ menu.title }}/
+                    {% endfor %}
+                        -
+                     Archivos Vigentes
+                </h1>
+            </div>
+            <div class="panel-body">
+                <table id="table-entities" class="table table-bordered table-responsive">
+                    <thead>
+                    <tr>
+                        <th class="hide"></th>
+                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <th>#</th>
+                        {% endif %}
+                        <th>Nombre</th>
+                        {% if pictures == true %}
+                            <th>Vista <br>Previa</th>
+                        {% endif %}
+                        <th>Versión</th>
+                        <th>Fecha Creado</th>
+                        <th>Creado Por</th>
+                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                            <th>Estado</th>
+                        {% endif %}
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for file in files %}
+                        {% if file.enabled == 1 %}
+                            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                <tr>
+                                    <td><input type="checkbox" data-val="{{ file.id }}"></td>
+                                    <td class="hide">{{ file.id }}</td>
+                                    <td>{{ file.link }}</td>
+                                    {% if pictures == true %}
+                                        {% if file.file |slice(-4) == ".pdf" %}
+                                            <td><img id="mediumusers-image" src="{{ asset(file.file | imagine_filter('pdf')) }}"/></td>
+                                        {% elseif file.file |slice(-4) == ".jpg" or file.file |slice(-4) == "jpeg"%}
+                                            <td><img id="mediumusers-image" src="{{ asset(file.file | imagine_filter('home_thumb')) }}"/></td>
+                                        {% else %}
+                                            <td><img id="mediumusers-image" src="{{ asset(file.file | imagine_filter('home_thumb')) }}"/></td>
+                                        {% endif %}
+                                    {% endif %}
+                                    <td>V. {{ file.level }}</td>
+                                    <td>{{ file.created|date('d-m-Y') }}</td>
+                                    <td>{{ file.createdby.fullName }}</td>
+                                    <td>{% if file.enabled == 1 %}Activo{% else %}Inactivo{% endif %}</td>
+                                    <td>
+                                        <!--<button type="button"  onclick="addProyectoFileSecondVersion({{ idfolder }}, {{ file.id }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-plus"></i></button> -->
+                                        <button id="verhistoriaarchivo" type="button" data-id="{{ file.file }}" onclick="viewHistory({{ idfolder }}, {{ file.root }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-eye"></i></button>
+                                        <a id="descargaarchivos" href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        <a id="desactivararchivos"  onclick="eliminar_archivo({{ file.id }}, {{ idfolder }})"class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="hide">{{ file.id }}</td>
+                                    <td>{{ file.link }}</td>
+                                    {% if pictures == true %}
+                                        {% if file.file |slice(-4) == ".pdf" %}
+                                            <td><img id="mediumusers-image" src="{{ asset(file.file | imagine_filter('pdf')) }}"/></td>
+                                        {% elseif file.file |slice(-4) == ".jpg" or file.file |slice(-4) == "jpeg"%}
+                                            <td><img id="mediumusers-image" src="{{ asset(file.file | imagine_filter('home_thumb')) }}"/></td>
+                                        {% else %}
+                                            <td><img id="mediumusers-image" src="{{ asset(file.file | imagine_filter('home_thumb')) }}"/></td>
+                                        {% endif %}
+                                    {% endif %}
+                                    <td>V. {{ file.level }}</td>
+                                    <td>{{ file.created|date('d-m-Y') }}</td>
+                                    <td>{{ file.createdby.fullName }}</td>
+                                    <td>
+                                        <!--<button type="button"  onclick="addProyectoFileSecondVersion({{ idfolder }}, {{ file.id }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-plus"></i></button> -->
+                                        <button id="verhistoriaarchivo" type="button" data-id="{{ file.file }}" onclick="viewHistory({{ idfolder }}, {{ file.root }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-eye"></i></button>
+                                        <a id="descargaarchivos"  href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

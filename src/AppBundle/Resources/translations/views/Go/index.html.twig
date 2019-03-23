@@ -1,0 +1,282 @@
+{% extends '::baseGo.html.twig' %}
+{% block body %}
+    <ol class="breadcrumb pull-right">
+        <li>
+            <a href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+        </li>
+        <li class="active"><span class="glyphicon glyphicon-users"></span>{{ singular }}</li>
+    </ol>
+
+    <h1 class="page-header">
+        <span class="text-muted font-weight-light">
+            <i class="page-header-icon ion-ios-keypad"></i>
+            Administración / {{ plural }}
+        </span>
+    </h1>
+    <div class="row">
+        <div class="col-md-12"><label>Seleccione Documentos</label></div>
+        <div class="col-md-9">
+
+            <select id="documentos" name="documentos[]" multiple class="form-control">
+                {% for entity in documents %}
+                    <option value="{{ entity.id }}">{{ entity.name }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-offset-1 col-md-2">
+            <button id="adddoctoproy" class="btn btn-inverse">
+                Asignar
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12"><label>Seleccione {{ sys_incharge }}</label></div>
+        <div class="col-md-9">
+
+            <select id="encargado" name="encargado"  class="form-control">
+                <option value="0">Seleccionar</option>
+                {% for entity in encargado %}
+                    <option value="{{ entity.id }}">{{ entity.fullname }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-offset-1 col-md-2">
+            <button id="addincharge" class="btn btn-inverse">
+                Asignar
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12"><label>Seleccione {{ sys_analyst }}</label></div>
+        <div class="col-md-9">
+
+            <select id="analistas" name="analistas[]" multiple class="form-control">
+                <option value="0">Seleccionar</option>
+                {% for entity in analista %}
+                    <option value="{{ entity.id }}">{{ entity.fullname }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-offset-1 col-md-2">
+            <button id="addanalyst" class="btn btn-inverse">
+                Asignar
+            </button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div id="mensajeresult"></div>
+    <div id="results">
+        {# Results here #}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/app/assets/appjs/bootbox.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/assets/appjs/devcrud.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            var options = {
+                _reload:                "{{ path(routes.results) }}",
+                _show:                  "{{ path(routes.show, { 'id': 'idElemento' }) }}",
+                _new:                   "{{ path(routes.new) }}",
+                _edit:                  "{{ path(routes.edit, { 'id': 'idElemento' }) }}",
+                _edit_analyst:          "{{ path(routes.edit_analyst, { 'id': 'idElemento' }) }}",
+                _edit_incharge:         "{{ path(routes.edit_incharge, { 'id': 'idElemento' }) }}",
+                _enabled:               "{{ path(routes.enabled, { 'id': 'idElemento' }) }}",
+                _analysttoproyect:      "{{ path(routes.analysttoproyect, { 'id': 'idElemento' }) }}",
+                _inchargetoproyect:      "{{ path(routes.inchargetoproyect, { 'id': 'idElemento' }) }}",
+                hasDatatable:  true,
+
+                entityName:    "{{ singular }}"
+            };
+            initializeCRUD(options);
+            $('#documentos').select2(
+                {width: '100%' }
+            );
+            $('#analistas').select2(
+                {width: '100%' }
+            );
+
+        });
+
+        $('#adddoctoproy').on('click', function(){
+            checkLoadingDevel(true);
+            var countdoc = $('#documentos option:selected').length;
+            var countproy = $('.chk:checked').length;
+
+            if(countdoc == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar Documento(s)';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+            if(countproy == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar proyecto(s)';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+
+            if(countproy != 0 && countdoc != 0 ) {
+                $('#documentos option:selected').each(function () {
+                    var docname = $(this).text();
+                    var docid = $(this).val();
+                    $('.chk:checked').each(function () {
+                        var chkname = $(this).data('val');
+                        var chkid = $(this).val();
+                        var path = "{{ path('app_go_adddocumentstoproyects',{ 'idproy': 'idElemento', 'iddoc': 'idElemento2' }) }}";
+                        path = path.replace('idElemento', chkid);
+                        path = path.replace('idElemento2', docid);
+
+                        $.ajax({
+                            type: 'POST',
+                           async: true,
+                            url: path,
+                            success: function (results) {
+                                if (results === 'success') {
+                                    var message = 'Se ha agregado a proyecto: ' + chkname + ' el documento: ' + docname + ' .';
+                                    var alerta = 'alert-success';
+                                    messagesDevelDiv(alerta, message);
+                                } else if (results === 'duplicate') {
+                                    var message = 'No Se ha agregado a proyecto: ' + chkname + ' el documento: ' + docname + ' por que ya existe en la base de datos.';
+                                    var alerta = 'alert-danger';
+                                    messagesDevelDiv(alerta, message);
+                                }
+                            },
+                            error: function (e) {
+                                console.log(e);
+                            }
+                        });
+                    });
+                });
+                $("#documentos > option").removeAttr("selected");
+                $("#documentos").trigger("change");
+                $('input[type=checkbox]').prop('checked',false);
+                checkLoadingDevel(false);
+            }
+            loadTable();
+        });
+
+        $('#addincharge').click(function(){
+            checkLoadingDevel(true);
+            var countproy = $('.chk:checked').length;
+            var encargado = $('#encargado').val();
+            var nombre = $('#encargado option:selected').text();
+
+            if(countproy == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar proyecto(s)';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+            if(encargado == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar {{ sys_incharge }}';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+
+            if(countproy != 0 && encargado != 0 ) {
+
+                $('.chk:checked').each(function () {
+                    var chkname = $(this).data('val');
+                    var chkid = $(this).val();
+                    var path = "{{ path('app_go_addencargado',{ 'idproy': 'idElemento', 'idencargado': 'idElemento2' }) }}";
+                    path = path.replace('idElemento', chkid);
+                    path = path.replace('idElemento2', encargado);
+
+                    $.ajax({
+                        type: 'POST',
+                       async: true,
+                        url: path,
+                        success: function (results) {
+                            if (results === 'success') {
+                                var message = 'Se ha agregado a proyecto: ' + chkname + ' {{ sys_incharge }}: ' + nombre + ' .';
+                                var alerta = 'alert-success';
+                                messagesDevelDiv(alerta, message);
+                            } else if (results === 'duplicate') {
+                                var message = 'No Se ha agregado a proyecto: ' + chkname + ' {{ sys_incharge }}: ' + nombre + ' por que ya existe en la base de datos.';
+                                var alerta = 'alert-danger';
+                                messagesDevelDiv(alerta, message);
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+                });
+                $('#encargado').val(0);
+                $('input[type=checkbox]').prop('checked',false);
+                checkLoadingDevel(false);
+            }
+            loadTable();
+        });
+
+        $('#addanalyst').on('click', function(){
+            checkLoadingDevel(true);
+            var analista = $('#analistas option:selected').length;
+            var countproy = $('.chk:checked').length;
+            var nombre = $('#analista option:selected').text();
+
+            if(analista == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar {{ sys_analyst }}';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+            if(countproy == 0){
+                checkLoadingDevel(false);
+                var message = 'Debes seleccionar proyecto(s)';
+                var alerta = 'alert-danger';
+                messagesDevelDiv(alerta, message);
+            }
+
+            if(countproy != 0 && analista != 0 ) {
+                $('#analistas option:selected').each(function () {
+                    var nombre = $(this).text();
+                    var idanalista = $(this).val();
+
+                    $('.chk:checked').each(function () {
+                        var chkname = $(this).data('val');
+                        var chkid = $(this).val();
+                        var path = "{{ path('app_go_addanalista',{ 'idproy': 'idElemento', 'idanalista': 'idElemento2' }) }}";
+                        path = path.replace('idElemento', chkid);
+                        path = path.replace('idElemento2', idanalista);
+
+                        $.ajax({
+                            type: 'POST',
+                            async: true,
+                            url: path,
+                            success: function (results) {
+                                if (results === 'success') {
+                                    var message = 'Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' .';
+                                    var alerta = 'alert-success';
+                                    messagesDevelDiv(alerta, message);
+                                } else if (results === 'duplicate') {
+                                    var message = 'No Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' por que ya existe en la base de datos.';
+                                    var alerta = 'alert-danger';
+                                    messagesDevelDiv(alerta, message);
+                                }
+                            },
+                            error: function (e) {
+                                console.log(e);
+                            }
+                        });
+                    });
+                });
+
+
+            }
+            $("#analistas > option").removeAttr("selected");
+            $("#analistas").trigger("change");
+            $('input[type=checkbox]').prop('checked',false);
+            checkLoadingDevel(false);
+            loadTable();
+        });
+    </script>
+{% endblock %}

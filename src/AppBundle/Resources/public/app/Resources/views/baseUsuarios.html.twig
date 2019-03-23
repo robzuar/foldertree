@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <title>{{ sistema }}</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <link href="{{ asset('bundles/app/assets/img/favicon.ico') }}" rel="shortcut icon">
+    <!-- ================== BEGIN BASE CSS STYLE ================== -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link href="{{ asset('bundles/app/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/font-awesome/5.0/css/fontawesome-all.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/ionicons/css/ionicons.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/animate/animate.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/animate.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/style.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/style-responsive.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/theme/black.css') }}" rel="stylesheet" id="theme" />
+    <!-- ================== END BASE CSS STYLE ================== -->
+
+    <!-- ================== BEGIN PAGE LEVEL CSS STYLE ================== -->
+    <link href="{{ asset('bundles/app/assets/plugins/jquery-jvectormap/jquery-jvectormap.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/bootstrap-calendar/css/bootstrap_calendar.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/gritter/css/jquery.gritter.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/morris/morris.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/plugins/gritter/css/jquery.gritter.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/app/assets/css/select2.css') }}" rel="stylesheet" />
+    <!-- ================== END PAGE LEVEL CSS STYLE ================== -->
+
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="{{ asset('bundles/app/assets/plugins/pace/pace.min.js') }}"></script>
+    <!-- ================== END BASE JS ================== -->
+    <!-- ================== BEGIN PAGE CSS STYLE ================== -->
+    <link href="{{ asset('bundles/app/assets/plugins/intro-js/introjs.css') }}" rel="stylesheet" />
+    <!-- ================== END PAGE CSS STYLE ================== -->
+
+    <!--<style>
+        table.table tr th{background-color:darkgrey !important;}
+    </style>-->
+    {% block stylesheets %}
+
+    {% endblock %}
+    <style>
+        #WindowLoad
+        {
+            position:fixed;
+            top:0px;
+            left:0px;
+            z-index:3200;
+            filter:alpha(opacity=65);
+            -moz-opacity:65;
+            opacity:0.65;
+            background:#999;
+        }
+
+        .modal-dialog{
+            width:90%;
+        }
+
+        .bootbox{
+            width:90%;
+        }
+
+        .modal-dialog .smallWidth {
+            margin: 0 auto;
+            width: 50%;
+        }
+
+    </style>
+</head>
+<!-- <body class="bg-silver-lighter"> -->
+<body class="bg-silver">
+<div id="WindowLoad"></div>
+<!-- begin #page-loader -->
+<div id="page-loader" class="fade in"><span class="spinner"></span></div>
+<!-- end #page-loader -->
+<!-- end #page-loader -->
+
+<!-- begin #page-container -->
+<div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
+    <!-- begin #header -->
+    <div id="header" class="header navbar navbar-inverse navbar-fixed-top">
+        <!-- begin container-fluid -->
+        <div class="container-fluid">
+            <!-- begin mobile sidebar expand / collapse button -->
+            <div class="navbar-header">
+                <h2 style="color: white; font-family: Helvetica;">  imagina</h2>
+
+            </div>
+            <!-- end mobile sidebar expand / collapse button -->
+
+
+            <!-- begin header navigation right -->
+            {% include 'baseMenu.html.twig' %}
+            <!-- end header navigation right -->
+        </div>
+        <!-- end container-fluid -->
+    </div>
+    <!-- end #header -->
+    <!-- begin #sidebar -->
+    <div id="sidebar" class="sidebar">
+        <!-- begin sidebar scrollbar -->
+        <div data-scrollbar="true" data-height="100%">
+            <!-- begin sidebar user -->
+            <!-- end sidebar user -->
+            <!-- begin sidebar nav -->
+            <ul class="nav">
+                <li class="nav-header" style="font-size: medium">Menú</li>
+                <li><a href="{{ path('homepage') }}"><i class="fa fa-cogs"></i>  Inicio</a></li>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    <li class="has-sub">
+                        <a href="javascript:;">
+                            <b class="caret pull-right"></b>
+                            <i class="fa fa-laptop"></i>
+                            <span>Configuración</span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ path('app_usuario_index') }}"><i class="fa fa-user"></i><span>  Usuarios</span></a></li>
+                            <li><a href="{{ path('app_acceso_index') }}"><i class="fa fa-user"></i><span>  Accesos</span></a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+                <!-- begin sidebar minify button -->
+                <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
+                <!-- end sidebar minify button -->
+            </ul>
+            <!-- end sidebar nav -->
+        </div>
+        <!-- end sidebar scrollbar -->
+    </div>
+    <div class="sidebar-bg"></div>
+    <!-- end #sidebar -->
+
+    <!-- begin #content -->
+    <div id="content" class="content">
+
+        {% block body %}{% endblock %}
+    </div>
+    <!-- end #content -->
+
+
+    <!-- begin scroll to top btn -->
+    <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+    <!-- end scroll to top btn -->
+</div>
+<!-- end page container -->
+
+<!-- ================== BEGIN BASE JS ================== -->
+<script src="{{ asset('bundles/app/assets/plugins/jquery/jquery-1.9.1.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery/jquery-migrate-1.1.0.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/DataTables/media/js/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/DataTables/media/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/DataTables/extensions/Responsive/js/dataTables.responsive.min.js') }}"></script>
+<!--[if lt IE 9]>
+<script src="{{ asset('bundles/app/assets/crossbrowserjs/html5shiv.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/crossbrowserjs/respond.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/crossbrowserjs/excanvas.min.js') }}"></script>
+<![endif]-->
+<script src="{{ asset('bundles/app/assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery-cookie/jquery.cookie.js') }}"></script>
+<!-- ================== END BASE JS ================== -->
+
+<!-- ================== BEGIN PAGE LEVEL JS ================== -->
+<script src="{{ asset('bundles/app/assets/plugins/morris/raphael.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/morris/morris.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery-jvectormap/jquery-jvectormap.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/jquery-jvectormap/jquery-jvectormap-world-merc-en.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/bootstrap-calendar/js/bootstrap_calendar.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/gritter/js/jquery.gritter.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/js/dashboard-v2.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/js/apps.min.js') }}"></script>
+<!-- ================== END PAGE LEVEL JS ================== -->
+<script src="{{ asset('bundles/app/assets/appjs/bootbox.min.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/appjs/devcrud.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/appjs/select2.full.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/gritter/js/jquery.gritter.js') }}"></script>
+<script src="{{ asset('bundles/app/assets/plugins/intro-js/intro.js') }}"></script>
+<!-- <script src="{{ asset('bundles/app/assets/validation/jquery.validate.js') }}"></script> -->
+{% block javascripts %}
+{% endblock %}
+<script>
+    var sUrlDatatable =  "{{ asset('bundles/app/assets/js/datatables-lang-es.json') }}";
+    $(document).ready(function() {
+        App.init();
+        window.addEventListener('keydown', function(e) {
+            if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+                if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        }, true);
+
+        var pageName = (function () {
+            var a = window.location.href,
+                b = a.split("/");
+            return b[b.length-2];
+        }());
+
+    });
+
+    function startIntro(valor){
+
+        if(valor == 0){
+            var pageName = (function () {
+                var a = window.location.href,
+                    b = a.split("/");
+                return b[b.length-1];
+            }());
+
+
+
+            //console.log(pageName);return false;
+
+            var intro = introJs();
+            intro.setOptions({
+                showStepNumbers: false,
+                showBullets: false,
+                skipLabel: 'Salir',
+                doneLabel: 'Salir',
+                nextLabel: 'Siguiente',
+                prevLabel: 'Anterior',
+                steps: [
+                    {
+                        element: '#addpermiso',
+                        intro: 'Permite agregar una nueva carpeta'
+                    },
+                    {
+                        element: '#addpermisotocategory',
+                        intro: 'Permite añadir permisos a la carpeta'
+
+                    },
+                    {
+                        element: '#editcategory',
+                        intro: 'Editar Nombre Carpeta'
+                    },
+                    {
+                        element: '#deletecategory',
+                        intro: 'Remover Carpeta'
+                    },
+                    {
+                        element: '#vercontenido',
+                        intro: 'Visualizar contenido de carpeta'
+                    },
+                    {
+                        element: '#agregardatosproyecto',
+                        intro: 'Agregar datos de proyecto'
+                    },
+                    {
+                        element: '#editardatosproyecto',
+                        intro: 'Editar datos del proyecto'
+                    },
+                    {
+                        element: '#subirarchivos',
+                        intro: 'Subir archivos al sistema'
+                    },
+                    {
+                        element: '#verhistoriaarchivo',
+                        intro: 'Lista todas las versiones de un archivo'
+                    },
+                    {
+                        element: '#descargaarchivos',
+                        intro: 'Descarga archivo del sistema'
+                    },
+                    {
+                        element: '#fileupload',
+                        intro: 'Seleccionar un o unos archivos(multiple con botón control/ ctrl'
+                    },
+                    {
+                        element: '#correo',
+                        intro: 'Seleccionar para enviar correo de aviso de archivo/s'
+                    },
+                    {
+                        element: '.btn-permisotocategory',
+                        intro: 'Agregar Grupos de Permiso para visualizar contenidos del menú'
+                    },
+                    {
+                        element: '.btn-details',
+                        intro: 'Ver ventana con detalles, botón Deshabilitar, botón Editar'
+                    },
+                    {
+                        element: '.btn-usertogroup',
+                        intro: 'Agregar usuarios a Grupos de Correo'
+                    },
+                    {
+                        element: '.btn-usertoacceso',
+                        intro: 'Agregar usuarios a Grupos de Permisos'
+                    },
+                    {
+                        element: '.btn-add',
+                        intro: 'Agregar Nuevo Elemento'
+                    },
+                    {
+                        element: '#btn-esconder',
+                        intro: 'Remover Tabla de historial de archivo'
+                    }
+                ].filter(function(obj) { return $(obj.element).length; })
+            });
+            intro.start();
+
+        }
+    }
+
+    function cambiarpass(id){
+
+        var path = "{{ path('change_password_app', { 'id': 'idElemento' }) }}";
+        path = path.replace('idElemento', id);
+        var entityName = "Contraseña";
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: path,
+            success: function (results) {
+                var options = {
+                    title: "Cambiar " + entityName
+                    , message: results
+                    , form: "#the-form"
+                    , messageSuccess: "Agregado Correctamente"
+                };
+                generateBootboxPass(options, id);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+
+
+    };
+
+    function generateBootboxPass(options, id) {
+        if ( !(options.hasOwnProperty('title')) ) {
+            title = "Alert! Debes agregar el title";
+        } else {
+            title = options.title;
+        }
+
+        if ( !(options.hasOwnProperty('message')) ) {
+            message = "Alert! Debes agregar el message";
+        } else {
+            message = options.message;
+        }
+
+        if ( !(options.hasOwnProperty('form')) ) {
+            form = "Alert! Debes agregar el form";
+        } else {
+            form = options.form;
+        }
+
+        if ( !(options.hasOwnProperty('messageSuccess')) ) {
+            messageSuccess = "Alert! Debes agregar el messageSuccess";
+        } else {
+            messageSuccess = options.messageSuccess;
+        }
+
+        bootbox.dialog({
+            message: message,
+            buttons: {
+                success: {
+                    label: "<i class='fa fa-reply'></i> Volver",
+                    className: "btn-default",
+                    callback: function() {
+                    }
+                },
+                submit: {
+                    label: "<i class='fa fa-floppy-o'></i> Guardar",
+                    className: "btn-primary",
+                    callback: function() {
+                        var formData = $(form).serializeArray();
+                        var path     = $(form).prop("action");
+                        $.ajax({
+                            type: "POST",
+                            async: true,
+                            data: formData,
+                            url: path,
+                            success: function(results) {
+                                if (results == "success") {
+                                    bootbox.alert(messageSuccess, function() {
+                                        //loadTable();
+                                        //document.location.reload(true)
+                                    });
+                                }else{
+                                    var options = {
+                                        title:           title
+                                        ,message:        results
+                                        ,form:           form
+                                        ,messageSuccess: messageSuccess
+                                    };
+                                    generateBootboxPass(options);
+                                }
+                            },
+                            error: function(e){
+                                console.log(e);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        $('.bootbox-close-button').hide();
+        $('.modal-body').css('padding',0);
+        $('.panel').css('margin-bottom',0);
+
+    }
+
+</script>
+</body>
+</html>
