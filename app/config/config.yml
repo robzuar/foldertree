@@ -8,7 +8,7 @@ imports:
 parameters:
     locale: es
     address: "%mailer_user%"
-    sendemail: true
+    sendemail: false
     sistema : "IMOS"
     sender_name: "IMOS - Imagina"
     upload_directory: '%kernel.root_dir%/../web/upload'

@@ -110,31 +110,22 @@ class FileimgController extends CrudController
                 $arraygrupotousuarios[] = $em->getRepository('AppBundle:Usuario')->getUserGroups($entgrupo);
             }
         }
-
-        //dump($listadousuarios);die('fin');
-
         if(count($listadousuarios) >= 1) {
             foreach($listadousuarios as $usua) {
-                //dump($usua);die('fin');
                 $arraygrupotousuarios[0][] = $em->getRepository('AppBundle:Usuario')->find($usua);
             }
         }
-        //dump($arraygrupotousuarios);die('fin');
         if(count($listadogrupos) >= 1 || count($listadousuarios) >= 1) {
             $newarray = array_unique($arraygrupotousuarios[0]);
         }
-
-        //dump($newarray);die('fin');
         if($newarray  >= 1){
             $subject = 'Se ha Creado un nuevo Archivo: ';
-
             foreach ($newarray as $usuario) {
-
                 if($parametroemail == true) {
                     $strTo = $usuario->getEmail();
                 }else{
-                    $strTo = $user->getEmail();
-                    //$strTo = 'roberto.zuniga.araya@gmail.com';
+                    $strTo = 'roberto.zuniga.araya@gmail.com';
+                    $subject = 'TEST/Se ha Creado un nuevo Archivo: ';
                 }
 
                 $strSubject = $subject;
@@ -179,114 +170,81 @@ class FileimgController extends CrudController
             $nombrearchivos = [];
             $category = $em->getRepository('AppBundle:Category')->find($id);
             $idUsuario = $usuario->getId();
-
-
             $version = $request->get('cantversion');
-
+            $versionChk = $request->get('version_chk');
             $increment = 0;
+            $pathDocument = $this->get('service_container')->getParameter('kernel.root_dir') . '/../web/media/upload';
+            //dump($version);dump($versionChk);die();
 
-            foreach($files as $file){
-                if($version > 0) {
-                    for ($i=0; $i < $version; $i++) {
-                        $nombreoriginal = explode(".", $file->getClientOriginalName())[0];
-                        $extensionoriginal = explode(".", $file->getClientOriginalName())[1];
+            if($versionChk == 1) {
+                //dump('enif');die();
+                foreach ($files as $file) {
+                    if ($version > 0) {
+                        for ($i = 0; $i < $version; $i++) {
+                            $nombreoriginal = explode(".", $file->getClientOriginalName())[0];
+                            $nombreoriginal = strtoupper($nombreoriginal);
+                            $string = explode("_V", $nombreoriginal);
+                            $solonombre = $string[0];
+                            $solonombre = strtoupper($solonombre);
+                            $extension = $file->guessExtension();
 
-                        $nombreoriginal = strtoupper($nombreoriginal);
-                        $string = explode("_V", $nombreoriginal);
-                        $solonombre = $string[0];
-                        $solonombre = strtoupper($solonombre);
+                            if ($i == 0) {
+                                $entity = new Fileimg($usuario);
+                                $fecha = new \DateTime();
+                                $fecha = $fecha->format('dmyHis');
+                                $fileName = $idUsuario . '' . $increment . '' . $fecha;
+                                $fileName = strtoupper($fileName) . '.' . $extension;
+                                $entity->setCategory($category);
+                                $entity->setFile($fileName);
+                                $entity->setActivo(false);
+                                $entity->setLink($solonombre);
+                                $em->persist($entity);
+                                $em->flush();
+                            } else {
+                                $original = $em->getRepository('AppBundle:Fileimg')->findBy(
+                                    ['link' => $solonombre,'category' => $category],
+                                    ['level' => 'DESC']
+                                );
+                                $entity = new Fileimg($usuario);
+                                $fecha = new \DateTime();
+                                $fecha = $fecha->format('dmyHis');
+                                $fileName = $idUsuario . '' . $increment . '' . $fecha . '.' . $extension;
+                                $parent = $em->getRepository('AppBundle:Fileimg')->find($original[0]->getId());
+                                $entity->setParent($parent);
+                                $entity->setCategory($category);
+                                $entity->setFile($fileName);
+                                $entity->setActivo(true);
+                                $entity->setLink($solonombre);
+                                $parent->setActivo(false);
 
+                                $em->persist($parent);
+                                $em->persist($entity);
+                                $em->flush();
+                            }
 
-
-                        $extension = $file->guessExtension();
-
-                        if($i == 0) {
-                            $entity = new Fileimg($usuario);
-                            $fecha = new \DateTime();
-                            $fecha = $fecha->format('dmyHis');
-                            $fileName = $idUsuario . '' . $increment . '' . $fecha;
-                            $fileName = strtoupper($fileName).'.' . $extension;
-                            $entity->setCategory($category);
-                            $entity->setFile($fileName);
-                            $entity->setActivo(false);
-                            $entity->setLink($solonombre);
-
-                            $em->persist($entity);
-                            $em->flush();
-                        }else{
-                            $original = $em->getRepository('AppBundle:Fileimg')->findBy(
-                                [
-                                    'link' => $solonombre,
-                                ],
-                                [
-                                    'level' => 'DESC'
-                                ]
-                            );
-                            $entity = new Fileimg($usuario);
-                            $fecha = new \DateTime();
-                            $fecha = $fecha->format('dmyHis');
-                            $fileName = $idUsuario . '' . $increment . '' . $fecha . '.' . $extension;
-                            $parent = $em->getRepository('AppBundle:Fileimg')->find($original[0]->getId());
-                            $entity->setParent($parent);
-                            $entity->setCategory($category);
-                            $entity->setFile($fileName);
-                            $entity->setActivo(true);
-                            $entity->setLink($solonombre);
-                            $parent->setActivo(false);
-
-                            $em->persist($parent);
-                            $em->persist($entity);
-                            $em->flush();
                         }
-
                     }
                 }
-
-                if(isset($file)) {
-                    $nombreoriginal =  explode(".", $file->getClientOriginalName())[0];
-                    $extensionoriginal =  explode(".", $file->getClientOriginalName())[1];
-
+            }else{
+                //dump('enelse');die();
+                foreach ($files as $file) {
+                    $nombreoriginal = explode(".", $file->getClientOriginalName())[0];
                     $nombreoriginal = strtoupper($nombreoriginal);
                     $string = explode("_V", $nombreoriginal);
                     $solonombre = $string[0];
                     $original = $em->getRepository('AppBundle:Fileimg')->findBy(
-                        [
-                            'link' => $solonombre,
-                        ],
-                        [
-                            'level' => 'DESC'
-                        ]
+                        ['link' => $solonombre,'category' => $category],
+                        ['level' => 'DESC']
                     );
 
                     $entity = new Fileimg($usuario);
                     $fecha = new \DateTime();
                     $extension = $file->guessExtension();
                     $fecha = $fecha->format('dmyHis');
-                    $fileName = $idUsuario . ''.$increment.'' . $fecha . '.' . $extension;
-                    $pathDocument = $this->get('service_container')
-                            ->getParameter('kernel.root_dir') . '/../web/media/upload';
-                    $pathcache = $this->get('service_container')
-                            ->getParameter('kernel.root_dir') . '/../web/media/upload/cache';
-                    $pathpdf = $this->get('service_container')
-                            ->getParameter('kernel.root_dir') . '/../web/media/upload/cache/pdf';
-                    $paththumb = $this->get('service_container')
-                            ->getParameter('kernel.root_dir') . '/../web/media/upload/cache/home_thumb';
-                    if (!file_exists($pathDocument)) {
-                        mkdir($pathDocument, 0777);
-
-                    }
-                    if (!file_exists($pathcache)) {
-                        mkdir($pathcache, 0777);
-                    }
-                    if (!file_exists($pathpdf)) {
-                        mkdir($pathpdf, 0777);
-                    }
-                    if (!file_exists($paththumb)) {
-                        mkdir($paththumb, 0777);
-                    }
+                    $fileName = $idUsuario . '' . $increment . '' . $fecha . '.' . $extension;
                     $increment++;
 
-                    if(count($original)  < 1) {
+                    if (count($original) < 1) {
                         if (!$file->getError()) {
                             $file->move($pathDocument, $fileName);
                             $entity->setCategory($category);
@@ -300,20 +258,11 @@ class FileimgController extends CrudController
                             $path = "";
                             $cat = $em->getRepository('AppBundle:Category');
                             $trees = $cat->getPath($category);
-                            foreach ($trees as $tree){
-                                $path = $path .' / '.$tree;
+                            foreach ($trees as $tree) {
+                                $path = $path . ' / ' . $tree;
                             }
-                            $user = $this->getUser();
-                            $log = new Log($user);
-                            $log->setEntidadId($entity->getId());
-                            $log->setNombre($entity->getLink());
-                            $log->setPath($path);
-                            $log->setAccion('Nuevo');
-                            $log->setEntidad('Archivo');
-                            $em->persist($log);
-                            $em->flush();
-
-                            $nombrearchivos[] =  $solonombre;
+                            $this->SetLog($entity, $path, 'Nuevo', 'Archivo');
+                            $nombrearchivos[] = $solonombre;
                         } else {
                             $fullpath = $pathDocument . '/' . $fileName;
                             if (file_exists($fullpath)) {
@@ -321,10 +270,9 @@ class FileimgController extends CrudController
                             }
                             $archivoserror[] = $entity;
                         }
-                    }else{
+                    } else {
                         if (!$file->getError()) {
                             $file->move($pathDocument, $fileName);
-
                             $parent = $em->getRepository('AppBundle:Fileimg')->find($original[0]->getId());
                             $entity->setParent($parent);
                             $entity->setCategory($category);
@@ -332,7 +280,6 @@ class FileimgController extends CrudController
                             $entity->setActivo(true);
                             $entity->setLink($solonombre);
                             $parent->setActivo(false);
-
                             $em->persist($parent);
                             $em->persist($entity);
                             $em->flush();
@@ -340,21 +287,11 @@ class FileimgController extends CrudController
                             $path = "";
                             $cat = $em->getRepository('AppBundle:Category');
                             $trees = $cat->getPath($category);
-                            foreach ($trees as $tree){
-                                $path = $path .' / '.$tree;
+                            foreach ($trees as $tree) {
+                                $path = $path . ' / ' . $tree;
                             }
-                            $user = $this->getUser();
-                            $log = new Log($user);
-                            $log->setEntidadId($entity->getId());
-                            $log->setNombre($entity->getLink());
-                            $log->setPath($path);
-                            $log->setAccion('Nuevo versión');
-                            $log->setEntidad('Archivo');
-                            $em->persist($log);
-                            $em->flush();
-
-                            $nombrearchivos[] =  $solonombre;
-
+                            $this->SetLog($entity, $path, 'Nuevo versión', 'Archivo');
+                            $nombrearchivos[] = $solonombre;
                         } else {
                             $fullpath = $pathDocument . '/' . $fileName;
                             if (file_exists($fullpath)) {
@@ -363,34 +300,19 @@ class FileimgController extends CrudController
                             $archivoserror[] = $entity;
                         }
 
-                        if($extension == "gif" || $extension == "jpg" || $extension == "jpeg" || $extension == "png"){
+                        /*
+                        if ($extension == "gif" || $extension == "jpg" || $extension == "jpeg" || $extension == "png") {
                             $strImageBody = base64_decode($file);
-
-                            //var_dump($strImageBody);die();
-
-                            file_put_contents($pathDocument.'/'.$fileName, $strImageBody);
-
+                            file_put_contents($pathDocument . '/' . $fileName, $strImageBody);
                         }
+                        */
                     }
-
-                    unset($entity);
-                    unset($fecha);
-                    unset($fileName);
-                    unset($pathDocument);
-                    unset($grupoaccesos);
-                    unset($usgr);
-
                 }
             }
+            //dump('outofif');die();
             $listadosgrupos =  $request->get('grupoarray');
             $listadousarios =  $request->get('userarray');
-
             $this->correoAviso($listadousarios, $listadosgrupos, $nombrearchivos, $id);
-
-            $cat = $em->getRepository('AppBundle:category')->find($request->get('idfolder'));
-
-
-
             return $this->redirect($this->generateUrl('category_level',['id' => $id, 'pagina' => 1]));
         }
 
@@ -481,4 +403,35 @@ class FileimgController extends CrudController
         return new Response('success');
     }
 
+    private function SetLog($entity, $path, $accion, $entidad){
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        $log = new Log($user);
+        $log->setEntidadId($entity->getId());
+        $log->setNombre($entity->getLink());
+        $log->setPath($path);
+        $log->setAccion($accion);
+        $log->setEntidad($entidad);
+        $em->persist($log);
+        $em->flush();
+    }
+
+    private function createFolders($pathDocument){
+
+        $pathcache = $this->get('service_container')->getParameter('kernel.root_dir') . '/../web/media/upload/cache';
+        $pathpdf = $this->get('service_container')->getParameter('kernel.root_dir') . '/../web/media/upload/cache/pdf';
+        $paththumb = $this->get('service_container')->getParameter('kernel.root_dir') . '/../web/media/upload/cache/home_thumb';
+        if (!file_exists($pathDocument)) {
+            mkdir($pathDocument, 0777);
+        }
+        if (!file_exists($pathcache)) {
+            mkdir($pathcache, 0777);
+        }
+        if (!file_exists($pathpdf)) {
+            mkdir($pathpdf, 0777);
+        }
+        if (!file_exists($paththumb)) {
+            mkdir($paththumb, 0777);
+        }
+    }
 }

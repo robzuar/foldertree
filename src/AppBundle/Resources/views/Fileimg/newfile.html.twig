@@ -13,7 +13,13 @@
                         <div id="typefile" class="hide alert alert-danger fade in m-b-15" >
                             Ha seleccionado un/os archivo/s no válido/s.<br>
                             Archivos Válidos : Word, Excel, Powerpoint, jpg, png, gif y pdf.<br>
-                            Debe volver a cargar archivos solo con los tipos descritos.
+                            Debe volver a cargar archivos solo con los tipos descritos.<br>
+                            Los nombres de los archivos no pueden contener puntos en su nombre a excepción de el punto para la extensión del mismo.
+                        </div>
+                        <div id="namefile" class="hide alert alert-danger fade in m-b-15" >
+                            Ha seleccionado un/os archivo/s no válido/s.<br>
+                            Los nombres de los archivos no pueden contener puntos en su nombre a excepción de el punto para la extensión del mismo<br>
+
                         </div>
                         <div id="fileoversize" class="hide alert alert-danger fade in m-b-15" >
                             Ha seleccionado un/os archivo/s que exceden el tamaño maximo. 20 MegaBytes<br>
@@ -36,7 +42,7 @@
                                             <div class="col-md-12">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input id="version_chk" type="checkbox" value="1" />
+                                                        <input id="version_chk" name="version_chk" type="checkbox" value="1" />
                                                         Desea Establecer un numero de version?
                                                         <br>
                                                         <div id="div_version" class="hide">
@@ -52,7 +58,7 @@
                                             <div class="col-md-12">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input id="correo" type="checkbox" value="1" />
+                                                        <input id="version_chk" name="version_chk" type="checkbox" value="1" />
                                                         Desea Enviar Correo de Aviso?
                                                     </label>
                                                 </div>
@@ -246,6 +252,12 @@
 
         $('INPUT[type="file"]').change(function () {
             var ext = this.value.match(/\.(.+)$/)[1];
+            var validFileExtensions = ["jpg", "jpeg", "gif", "png",'doc','docx','xls','xlsx','ppt','pptx','pdf'];
+            var fileErrors = new Array();
+            var ext2 = this.value.split('.').pop();
+            if( $.inArray( ext2, validFileExtensions ) == -1) {
+                fileErrors.push(file);
+            }
             switch (ext) {
                 case 'jpg':
                 case 'jpeg':
@@ -267,6 +279,13 @@
                     }, 6000);
                     this.value = '';
             }
+            if(fileErrors > 0 ){
+                $('#namefile').removeClass('hide');
+                setTimeout(function() {
+                    $('#namefile').addClass("hide");
+                }, 6000);
+            }
+            //console.log(fileErrors);return false;
         });
 
 

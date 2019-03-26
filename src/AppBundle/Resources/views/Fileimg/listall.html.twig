@@ -46,7 +46,7 @@
                                     <td>{{ file.createdby.fullName }}</td>
                                     <td>
                                         {% if is_granted('ROLE_SUPER_ADMIN') or  is_granted('ROLE_ADMIN')  %}
-                                        <a href="{{ asset('media/upload/' ~ file.file) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        <a href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
                                         {% else %}
                                             Sin Acciones
                                         {% endif %}
@@ -68,7 +68,7 @@
                                         <td>{{ file.createdby.fullName }}</td>
                                         <td>
                                             {% if is_granted('ROLE_SUPER_ADMIN') or  is_granted('ROLE_ADMIN')  %}
-                                                <a href="{{ asset('media/upload/' ~ file.file) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                                <a href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
                                             {% else %}
                                                 Sin Acciones
                                             {% endif %}

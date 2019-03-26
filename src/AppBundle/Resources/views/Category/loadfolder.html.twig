@@ -205,7 +205,7 @@
                                     <td>
                                         <!--<button type="button"  onclick="addProyectoFileSecondVersion({{ idfolder }}, {{ file.id }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-plus"></i></button> -->
                                         <button id="verhistoriaarchivo" type="button" data-id="{{ file.file }}" onclick="viewHistory({{ idfolder }}, {{ file.root }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-eye"></i></button>
-                                        <a id="descargaarchivos" href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        <a id="descargaarchivos" href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
                                         <a id="desactivararchivos"  onclick="eliminar_archivo({{ file.id }}, {{ idfolder }})"class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-trash"></i></a>
                                     </td>
                                 </tr>
@@ -228,7 +228,7 @@
                                     <td>
                                         <!--<button type="button"  onclick="addProyectoFileSecondVersion({{ idfolder }}, {{ file.id }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-plus"></i></button> -->
                                         <button id="verhistoriaarchivo" type="button" data-id="{{ file.file }}" onclick="viewHistory({{ idfolder }}, {{ file.root }})" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-eye"></i></button>
-                                        <a id="descargaarchivos"  href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
+                                        <a id="descargaarchivos"  href="{{ asset('media/upload/' ~ file.file) }}" download="{{ file.link }}" class="btn btn-medium btn-icon btn-circle btn-black"><i class="fa  fa-download"></i></a>
                                     </td>
                                 </tr>
                             {% endif %}
