@@ -74,54 +74,7 @@ abstract class CrudController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-
-            $entidad="";
-            $path = "";
-            $nombre = "";
-            $user = $this->getUser();
-            if($this::ENTITY_NAME == "Category"){
-                $entidad = 'Carpeta';
-                $nombre = $entity->getTitle();
-                $cat = $em->getRepository('AppBundle:Category');
-                $trees = $cat->getPath($entity);
-                foreach ($trees as $tree){
-                    $path = $path .' / '.$tree;
-                }
-            }elseif ($this::ENTITY_NAME  == "Fileimg"){
-                $entidad = 'Archivo';
-                $nombre = $entity->getLink();
-                $cat = $em->getRepository('AppBundle:Category');
-                $trees = $cat->getPath($entity);
-                foreach ($trees as $tree){
-                    $path = $path .' / '.$tree;
-                }
-            }elseif ($this::ENTITY_NAME  == "Group"){
-                $entidad = 'Grupo de Correo';
-                $nombre = $entity->getName();
-            }elseif ($this::ENTITY_NAME  == "Permiso"){
-                $entidad = 'Grupo de Permiso';
-                $nombre = $entity->getName();
-            }elseif ($this::ENTITY_NAME  == "Proyecto"){
-                $entidad = 'Proyecto';
-                $nombre = $entity->getNombre();
-            }elseif ($this::ENTITY_NAME  == "Usuario"){
-                $entidad = 'Usuario';
-                $nombre = $entity->getNombres(). "" . $entity->getApellidos();
-            }elseif ($this::ENTITY_NAME  == "Anteproyecto"){
-                $entidad = 'Anteproyecto';
-                $nombre = $entity->getNombre();
-                $entity->setCreatedBy($user);
-                $em->persist($entity);
-            }
-
-            $log = new Log($user);
-            $log->setEntidadId($entity->getId());
-            $log->setNombre($nombre);
-            $log->setPath($path);
-            $log->setAccion('Nuevo');
-            $log->setEntidad($entidad);
-            $em->persist($log);
-            $em->flush();
+            $this->setLog($entity, 'Nuevo');
 
             return new Response('success');
         }
@@ -182,52 +135,7 @@ abstract class CrudController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-
-            $entidad="";
-            $path = "";
-            $nombre = "";
-            if($this::ENTITY_NAME == "Category"){
-                $entidad = 'Carpeta';
-                $nombre = $entity->getTitle();
-                $cat = $em->getRepository('AppBundle:Category');
-                $trees = $cat->getPath($entity);
-                foreach ($trees as $tree){
-                    $path = $path .' / '.$tree;
-                }
-            }elseif ($this::ENTITY_NAME  == "Fileimg"){
-                $entidad = 'Archivo';
-                $nombre = $entity->getLink();
-                $cat = $em->getRepository('AppBundle:Category');
-                $trees = $cat->getPath($entity);
-                foreach ($trees as $tree){
-                    $path = $path .' / '.$tree;
-                }
-            }elseif ($this::ENTITY_NAME  == "Group"){
-                $entidad = 'Grupo de Correo';
-                $nombre = $entity->getName();
-            }elseif ($this::ENTITY_NAME  == "Permiso"){
-                $entidad = 'Grupo de Permiso';
-                $nombre = $entity->getName();
-            }elseif ($this::ENTITY_NAME  == "Proyecto"){
-                $entidad = 'Proyecto';
-                $nombre = $entity->getNombre();
-            }elseif ($this::ENTITY_NAME  == "Usuario"){
-                $entidad = 'Usuario';
-                $nombre = $entity->getNombres(). "" . $entity->getApellidos();
-            }elseif ($this::ENTITY_NAME  == "Anteproyecto"){
-                $entidad = 'Anteproyecto';
-                $nombre = $entity->getNombre();
-            }
-            $user = $this->getUser();
-            $log = new Log($user);
-            $log->setEntidadId($entity->getId());
-            $log->setNombre($nombre);
-            $log->setPath($path);
-            $log->setAccion('Editar');
-            $log->setEntidad($entidad);
-            $em->persist($log);
-            $em->flush();
-
+            $this->setLog($entity, 'Editar');
 
             return new Response('success');
         }
@@ -261,50 +169,7 @@ abstract class CrudController extends Controller
         $em->remove($entity);
         $em->flush();
 
-        $entidad="";
-        $path = "";
-        $nombre = "";
-        if($this::ENTITY_NAME == "Category"){
-            $entidad = 'Carpeta';
-            $nombre = $entity->getTitle();
-            $cat = $em->getRepository('AppBundle:Category');
-            $trees = $cat->getPath($entity);
-            foreach ($trees as $tree){
-                $path = $path .' / '.$tree;
-            }
-        }elseif ($this::ENTITY_NAME  == "Fileimg"){
-            $entidad = 'Archivo';
-            $nombre = $entity->getLink();
-            $cat = $em->getRepository('AppBundle:Category');
-            $trees = $cat->getPath($entity);
-            foreach ($trees as $tree){
-                $path = $path .' / '.$tree;
-            }
-        }elseif ($this::ENTITY_NAME  == "Group"){
-            $entidad = 'Grupo de Correo';
-            $nombre = $entity->getName();
-        }elseif ($this::ENTITY_NAME  == "Permiso"){
-            $entidad = 'Grupo de Permiso';
-            $nombre = $entity->getName();
-        }elseif ($this::ENTITY_NAME  == "Proyecto"){
-            $entidad = 'Proyecto';
-            $nombre = $entity->getNombre();
-        }elseif ($this::ENTITY_NAME  == "Usuario"){
-            $entidad = 'Usuario';
-            $nombre = $entity->getNombres(). "" . $entity->getApellidos();
-        }elseif ($this::ENTITY_NAME  == "Anteproyecto"){
-            $entidad = 'Anteproyecto';
-            $nombre = $entity->getNombre();
-        }
-        $user = $this->getUser();
-        $log = new Log($user);
-        $log->setEntidadId($entity->getId());
-        $log->setNombre($nombre);
-        $log->setPath($path);
-        $log->setAccion('Eliminar');
-        $log->setEntidad($entidad);
-        $em->persist($log);
-        $em->flush();
+        $this->setLog($entity, 'Eliminar');
 
         return new Response('success');
     }
@@ -337,9 +202,41 @@ abstract class CrudController extends Controller
         $em->persist($entity);
         $em->flush();
 
-        $entidad="";
-        $path = "";
+        $this->setLog($entity, 'Activo/no Activo');
+
+        return new Response('success');
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     */
+    private function getRepository()
+    {
+        $em = $this->getDoctrine()->getManager();
+        return $repository = $em->getRepository('AppBundle:'.$this::ENTITY_NAME);
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getRoutesForEntity()
+    {
+        return [
+            'results' => "app_".strtolower($this::ENTITY_NAME)."_results",
+            'show' => "app_".strtolower($this::ENTITY_NAME)."_show",
+            'new' => "app_".strtolower($this::ENTITY_NAME)."_new",
+            'edit' => "app_".strtolower($this::ENTITY_NAME)."_edit",
+            'delete' => "app_".strtolower($this::ENTITY_NAME)."_delete",
+            'enabled' => "app_".strtolower($this::ENTITY_NAME)."_enabled"
+        ];
+    }
+
+    public function setLog($entity, $accion){
+        $em = $this->getDoctrine()->getManager();
         $nombre = "";
+        $path = "";
+        $entidad = "";
         if($this::ENTITY_NAME == "Category"){
             $entidad = 'Carpeta';
             $nombre = $entity->getTitle();
@@ -377,40 +274,9 @@ abstract class CrudController extends Controller
         $log->setEntidadId($entity->getId());
         $log->setNombre($nombre);
         $log->setPath($path);
-        if($entity->getEnabled(true)){
-            $log->setAccion('Habilitar');
-        }else{
-            $log->setAccion('Deshabilitar');
-        }
+        $log->setAccion($accion);
         $log->setEntidad($entidad);
         $em->persist($log);
         $em->flush();
-
-        return new Response('success');
-    }
-
-    /**
-     * @return \Doctrine\Common\Persistence\ObjectRepository
-     */
-    private function getRepository()
-    {
-        $em = $this->getDoctrine()->getManager();
-        return $repository = $em->getRepository('AppBundle:'.$this::ENTITY_NAME);
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getRoutesForEntity()
-    {
-        return [
-            'results' => "app_".strtolower($this::ENTITY_NAME)."_results",
-            'show' => "app_".strtolower($this::ENTITY_NAME)."_show",
-            'new' => "app_".strtolower($this::ENTITY_NAME)."_new",
-            'edit' => "app_".strtolower($this::ENTITY_NAME)."_edit",
-            'delete' => "app_".strtolower($this::ENTITY_NAME)."_delete",
-            'enabled' => "app_".strtolower($this::ENTITY_NAME)."_enabled"
-        ];
     }
 }
