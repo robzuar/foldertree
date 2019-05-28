@@ -279,4 +279,36 @@ abstract class CrudController extends Controller
         $em->persist($log);
         $em->flush();
     }
+
+    public function sendEmailNew($entity, $subject, $body,  $comment, $receivers)
+    {
+        $emails= [];
+        $emailsReceivers= [];
+
+        if($body == 'startproject') {
+            $body = $this->renderView('@App/Emails/newemail.html.twig',
+                [
+                    'entity'    => $entity
+
+                ]
+            );
+
+            foreach ($receivers as $receiver){
+                $emails[] = $receiver->getEmail();
+            }
+
+        }
+
+        $addresses = array_unique(array_merge($emails, $emailsReceivers));
+        //$addresses = 'roberto.zuniga.araya@gmail.com';
+
+        $message = (new \Swift_Message('My important subject here'))
+            ->setFrom($this->container->getParameter('mailer_sender'))
+            ->setTo($addresses)
+            ->setSubject($subject)
+            ->setBody($body, 'text/html')
+        ;
+        $this->get('mailer')->send($message);
+
+    }
 }

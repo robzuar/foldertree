@@ -18,7 +18,10 @@
                     {% for entity in entities %}
                         <tr>
                             <td>
-                                <a href="{{ asset('media/Task/' ~ entity.file) }}" download="{{ entity.link }}{{ entity.file |slice(-4) }}" class="btn btn-xs"><i class="fa fa-download"></i>  {{ entity.link }}</a><a href="javascript:void(0)" onclick="deleteFilesGo({{ entity.id }})" class="btn btn-sm btn-danger"><i class="fa fa-unlink"></i>  Eliminar</a>
+                                <a href="{{ asset('media/Task/' ~ entity.file) }}" download="{{ entity.link }}{{ entity.file |slice(-4) }}" class="btn btn-xs"><i class="fa fa-download"></i>  {{ entity.link }}</a>
+                                {% if task.estado != 'COMPLETADO' %}
+                                <a href="javascript:void(0)" onclick="deleteFilesGo({{ entity.id }})" class="btn btn-sm btn-danger"><i class="fa fa-unlink"></i>  Eliminar</a>
+                                {% endif %}
                             </td>
 
                         </tr>

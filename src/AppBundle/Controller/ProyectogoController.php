@@ -275,22 +275,26 @@ class ProyectogoController extends CrudController
     }
 
     /**
-     * @param $idproyecto
-     * @return bool
+     * @param $id
+     * @Route("/proyectogo/start/{id}", name_="app_proyectogo_start")
+     * @Method({"GET", "POST"})
+     * @Template()
+     * @return array|Response
+     * @throws \Exception
      */
-    public function startEmail($idproyecto)
+    public function start($id)
     {
+        //$this->startEmail($id);
         $em = $this->getDoctrine()->getManager();
 
         /** @var Usuario $user */
         $user = $this->getUser();
         $time = new \DateTime();
         $today = $time->format('Y-m-d');
-        $parametroemail = $this->get('service_container')->getParameter('sendemail');
         $arrayUsuariosChecker = [];
         $arrayUsuarios = [];
         $arrayUsuariosAssistent = [];
-        $proyecto = $em->getRepository('AppBundle:Proyectogo')->find($idproyecto);
+        $proyecto = $em->getRepository('AppBundle:Proyectogo')->find($id);
         $tasks = $em->getRepository('AppBundle:Taskdocument')->findBy(['proyectogo' => $proyecto]);
 
         foreach ($tasks as $task) {
@@ -307,51 +311,18 @@ class ProyectogoController extends CrudController
                 $task->setAsignedat($time);
                 $em->persist($task);
                 $em->flush();
-
-                $newarray = array_unique($arrayUsuarios);
-
-
-                $strSubject = 'Se ha Iniciado Proyecto Go : ' . $proyecto->getName();
-
-                foreach ($newarray as $usuario) {
-
-                    //$strTo = $usuario->getEmail();
-                    $strTo = 'roberto.zuniga.araya@gmail.com';
-                    $strBody = $this->renderView('AppBundle:Default:startproject.html.twig',
-                        [
-                            'creador' => $user
-                            , 'receptor' => $usuario,
-                            'proyecto' => $proyecto
-                        ]
-                    );
-
-                    $develMailerService = $this->get('app_mailer');
-                    $develMailerService->setTo($strTo);
-                    $develMailerService->setSubject($strSubject);
-                    $develMailerService->setFrom($this->get('service_container')
-                        ->getParameter('mailer_user'));
-                    $develMailerService->sendEmail($strBody);
-                }
-                $proyecto->setStartedat($time);
-                $em->persist($proyecto);
-                $em->flush();
-
-                return true;
             }
         }
-        return false;
-        //return true;//new Response('success');
-    }
-    /**
-     * @param $id
-     * @Route("/proyectogo/start/{id}", name_="app_proyectogo_start")
-     * @Method({"GET", "POST"})
-     * @Template()
-     * @return array|Response
-     */
-    public function start($id)
-    {
-        $this->startEmail($id);
+
+        $proyecto->setStartedat($time);
+        $em->persist($proyecto);
+        $em->flush();
+        $newarray = array_unique($arrayUsuarios);
+        $strSubject = 'Se ha Iniciado Proyecto Go : ' ;//. $proyecto->getName();
+        $strBody = 'startproject';
+        $this->sendEmailNew($proyecto, $strSubject, $strBody, null, $newarray );
+
+
 
         return new Response('success');
     }
@@ -380,8 +351,6 @@ class ProyectogoController extends CrudController
             if($task->getEstado()->getId() != $estado->getId()) {
                 $gocheckers = $em->getRepository('AppBundle:Gochecker')->findBy(['task' => $task]);
                 $goassistents = $em->getRepository('AppBundle:Goassistent')->findBy(['task' => $task]);
-
-
 
                 if (count($goassistents) == 0 || count($gocheckers) == 0) {
                     $state = true;

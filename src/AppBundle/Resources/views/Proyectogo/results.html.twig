@@ -46,7 +46,7 @@
                                     {% if entity.startedat is null %}
                                         {{ render(controller('AppBundle:Proyectogo:check', { 'id':  entity.id })) }}
                                     {% else %}
-                                        CONFIGURADO
+                                        Proyecto Iniciado
                                     {% endif %}
                                 </td>
                                 <td class="col-md-2">
@@ -95,7 +95,7 @@
     });
 
     function startProyect(id){
-        loading(true);
+        checkLoadingDevel(true);
 
         var path = "{{ path('app_proyectogo_start',{ 'id': 'idElemento' }) }}";
         path = path.replace('idElemento', id);
@@ -105,9 +105,10 @@
             async: true,
             url: path,
             success: function(results) {
-                loading(false);
+                checkLoadingDevel(false);
+                //console.log(results); return false;
                if(results === 'success'){
-loadTable();
+                    loadTable();
                }
             },
             error: function(e){
@@ -125,7 +126,7 @@ loadTable();
             async: true,
             url: path,
             success: function(results) {
-                loading(false);
+                checkLoadingDevel(false);
             },
             error: function(e){
                 console.log(e);

@@ -148,9 +148,10 @@ class GofileController extends CrudController
             throw $this->createNotFoundException('Unable to find entity.');
         }
         return [
-            'entities' => $entities,
-            'singular' => $this::SINGULAR_NAME,
-            'plural' => $this::PLURAL_NAME,
+            'task'      => $task,
+            'entities'  => $entities,
+            'singular'  => $this::SINGULAR_NAME,
+            'plural'    => $this::PLURAL_NAME,
             'idtask'    => $id
         ];
     }

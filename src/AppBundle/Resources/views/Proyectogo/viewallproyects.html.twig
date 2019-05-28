@@ -24,8 +24,11 @@
                     {% for entity in entities %}
                         <tr>
                             <td>
-
+                                {% if entity.startedat is not null %}
                                 <a href="javascript:void(0)" onclick="viewTasks({{ entity.id }})"><span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-building"></i></span>{{ entity.name }}</a>
+                                {% else %}
+                                    <span class="fa-stack fa-lg text-inverse"><i class="fas fa-lg fa-fw m-r-10 fa-building"></i></span>{{ entity.name }}
+                                {% endif %}
                             </td>
                             <td>
                                 {{ entity.inmobiliaria }}

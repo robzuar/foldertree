@@ -801,11 +801,6 @@ class GoController extends Controller
             $strSubject = 'Se ha asignado una nueva tarea a Proyecto: '. $entity->getProyectogo()->getName() .' en el cual Ud es Analista';
         }
 
-
-        $develMailerService = $this->get('app_mailer');
-        $develMailerService->setSubject($strSubject);
-        $develMailerService->setFrom($this->get('service_container')
-            ->getParameter('mailer_user'));
         if($accion === 'analyst' || $accion === 'newdocument') {
             //var_dump($analistas); exit();die();
 
@@ -829,8 +824,13 @@ class GoController extends Controller
                         ]
                     );
 
-                    $develMailerService->setTo($strTo);
-                    $develMailerService->sendEmail($strBody);
+                    $message = (new \Swift_Message('My important subject here'))
+                        ->setFrom($this->container->getParameter('mailer_sender'))
+                        ->setTo($strTo)
+                        ->setSubject($strSubject)
+                        ->setBody($strBody, 'text/html')
+                    ;
+                    $this->get('mailer')->send($message);
                 }
             }
         }else {
@@ -845,8 +845,15 @@ class GoController extends Controller
                 ]
             );
 
-            $develMailerService->setTo($strTo);
-            $develMailerService->sendEmail($strBody);
+
+            $message = (new \Swift_Message('My important subject here'))
+                ->setFrom($this->container->getParameter('mailer_sender'))
+                ->setTo($strTo)
+                ->setSubject($strSubject)
+                ->setBody($strBody, 'text/html')
+            ;
+            $this->get('mailer')->send($message);
+
         }
 
         return true;//new Response('success');

@@ -542,7 +542,7 @@ function checkLoadingDevel(load) {
     }
 }
 
-function checkLoadingDevelPro(load) {
+function checkLoadingDevel(load) {
     if (load === true) {
         jsShowWindowLoad();
     } else {

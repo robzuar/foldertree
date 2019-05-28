@@ -78,3 +78,7 @@ services:
         class: Twig_Extensions_Extension_Intl
         tags:
         - { name: twig.extension }
+
+    appmailservice:
+        class: AppBundle\Service\MailService
+        arguments: ["@mailer", "@templating", "@service_container"]

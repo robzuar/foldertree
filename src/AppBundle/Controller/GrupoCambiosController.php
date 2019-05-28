@@ -139,12 +139,13 @@ class GrupoCambiosController extends CrudController
                     ]
                 );
 
-                $develMailerService = $this->get('app_mailer');
-                $develMailerService->setTo($strTo);
-                $develMailerService->setSubject($strSubject);
-                $develMailerService->setFrom($this->get('service_container')
-                    ->getParameter('mailer_user'));
-                $develMailerService->sendEmail($strBody);
+                $message = (new \Swift_Message('My important subject here'))
+                    ->setFrom($this->container->getParameter('mailer_sender'))
+                    ->setTo($strTo)
+                    ->setSubject($strSubject)
+                    ->setBody($strBody, 'text/html')
+                ;
+                $this->get('mailer')->send($message);
             }
         }
         return true;//new Response('success');

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Goassistent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -131,19 +132,30 @@ class GocheckerController extends CrudController
             if ($doc->getIsfile()) {
                 foreach ($arrayCheckers as $newchecker) {
                     $contador = $contador + 1;
-                    $entity = new Gochecker($user);
-                    $checker = $em->getRepository('AppBundle:Usuario')->find(intval($newchecker));
-                    $entity->setChecker($checker);
-                    $entity->setTask($task);
-                    try {
-                        $em->persist($entity);
-                        $em->flush();
-                    } catch (\Doctrine\DBAL\DBALException $e) {
-                        $error = $error + 1;
-                    }
+                    $this->setCheckerToGroup($task, $newchecker);
                 }
             }
         }
         return new Response('success');
+    }
+
+    public function setCheckerToGroup($task, $newchecker){
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $error = 0;
+
+        $gochecker = $em->getRepository('AppBundle:Gochecker')->findOneBy(
+            [
+                'checker'   => intval($newchecker),
+                'task'      => $task
+            ]);
+        if(is_null($gochecker)) {
+            $entity = new Gochecker($user);
+            $checker = $em->getRepository('AppBundle:Usuario')->find(intval($newchecker));
+            $entity->setChecker($checker);
+            $entity->setTask($task);
+            $em->persist($entity);
+            $em->flush();
+        }
     }
 }

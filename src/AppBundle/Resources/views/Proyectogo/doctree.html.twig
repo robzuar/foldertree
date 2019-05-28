@@ -254,7 +254,7 @@
     });
 
     function guardar(selection){
-        loading(true);
+        checkLoadingDevel(true);
         var checked_ids = [];
         var allgood = true;
         var error = false;
@@ -306,23 +306,6 @@
                             if (results === 'error') {
                                 allgood = false;
                             }
-                            /*
-                                var title = "Guardado Correctamente";
-                                var message = 'Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' .';
-                                var alerta = 'alert-success';
-                                messageDevelGritter(alerta, message, title);
-                            } else if (results === 'duplicate') {
-                                var title = "Acción no ejecutada";
-                                var message = 'No Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' por que ya existe en la base de datos.';
-                                var alerta = 'alert-danger';
-                                messageDevelGritter(alerta, message, title);
-                            } else if(results === 'folder'){
-                                var title = "No es posible proceder";
-                                var message = 'No Se ha agregado a proyecto: ' + chkname + ' el documento: ' + nombre + ' por que es una carpeta.';
-                                var alerta = 'alert-danger';
-                                messageDevelGritter(alerta, message, title);
-                            }
-                            */
                         },
                         error: function (e) {
                           //console.log(e);
@@ -333,7 +316,7 @@
         }
         $("#"+selection+" > option").removeAttr("selected");
         $('input[type=checkbox]').prop('checked',false);
-        loading(false);
+        checkLoadingDevel(false);
 
         if(error){
             var title = "Campo vacio";
@@ -353,7 +336,6 @@
                 messageDevelGritter(alerta, message, title);
             }
         }
-        jsRemove();
     }
 
     function removeFromTaskAssistent(idPerson, idTask, idProyecto){
@@ -498,7 +480,7 @@
             error = true;
         }
 
-        loading(true);
+        checkLoadingDevel(true);
         if(checked_ids.length != 0 && combo != 0 ) {
             var path= "";
             if(selection === 'checker'){
@@ -518,7 +500,8 @@
                 //dataType: "json",
                 url: path,
                 success: function (results) {
-                    console.log(results);return false;
+                    checkLoadingDevel(false);
+                    //console.log(results);return false;
                     if (results === 'error') {
                         allgood = false;
                     }
@@ -530,7 +513,7 @@
         }
         $("#"+selection+" > option").removeAttr("selected");
         $('input[type=checkbox]').prop('checked',false);
-        loading(false);
+        
 
         if(error){
             var title = "Campo vacio";

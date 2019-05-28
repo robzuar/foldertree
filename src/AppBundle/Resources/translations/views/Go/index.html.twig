@@ -105,18 +105,18 @@
         });
 
         $('#adddoctoproy').on('click', function(){
-            checkLoadingDevel(true);
+            checkLoadingDevel(true)
             var countdoc = $('#documentos option:selected').length;
             var countproy = $('.chk:checked').length;
 
             if(countdoc == 0){
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
                 var message = 'Debes seleccionar Documento(s)';
                 var alerta = 'alert-danger';
                 messagesDevelDiv(alerta, message);
             }
             if(countproy == 0){
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
                 var message = 'Debes seleccionar proyecto(s)';
                 var alerta = 'alert-danger';
                 messagesDevelDiv(alerta, message);
@@ -157,25 +157,25 @@
                 $("#documentos > option").removeAttr("selected");
                 $("#documentos").trigger("change");
                 $('input[type=checkbox]').prop('checked',false);
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
             }
             loadTable();
         });
 
         $('#addincharge').click(function(){
-            checkLoadingDevel(true);
+            checkLoadingDevel(true)
             var countproy = $('.chk:checked').length;
             var encargado = $('#encargado').val();
             var nombre = $('#encargado option:selected').text();
 
             if(countproy == 0){
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
                 var message = 'Debes seleccionar proyecto(s)';
                 var alerta = 'alert-danger';
                 messagesDevelDiv(alerta, message);
             }
             if(encargado == 0){
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
                 var message = 'Debes seleccionar {{ sys_incharge }}';
                 var alerta = 'alert-danger';
                 messagesDevelDiv(alerta, message);
@@ -212,25 +212,25 @@
                 });
                 $('#encargado').val(0);
                 $('input[type=checkbox]').prop('checked',false);
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
             }
             loadTable();
         });
 
         $('#addanalyst').on('click', function(){
-            checkLoadingDevel(true);
+            checkLoadingDevel(true)
             var analista = $('#analistas option:selected').length;
             var countproy = $('.chk:checked').length;
             var nombre = $('#analista option:selected').text();
 
             if(analista == 0){
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
                 var message = 'Debes seleccionar {{ sys_analyst }}';
                 var alerta = 'alert-danger';
                 messagesDevelDiv(alerta, message);
             }
             if(countproy == 0){
-                checkLoadingDevel(false);
+                checkLoadingDevel(false)
                 var message = 'Debes seleccionar proyecto(s)';
                 var alerta = 'alert-danger';
                 messagesDevelDiv(alerta, message);
@@ -275,7 +275,7 @@
             $("#analistas > option").removeAttr("selected");
             $("#analistas").trigger("change");
             $('input[type=checkbox]').prop('checked',false);
-            checkLoadingDevel(false);
+            checkLoadingDevel(false)
             loadTable();
         });
     </script>

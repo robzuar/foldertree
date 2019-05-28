@@ -131,19 +131,29 @@ class GoassistentController extends CrudController
             if ($doc->getIsfile()) {
                 foreach ($arrayAssistents as $newassistent) {
                     $contador = $contador + 1;
-                    $entity = new Goassistent($user);
-                    $assistent = $em->getRepository('AppBundle:Usuario')->find(intval($newassistent));
-                    $entity->setAssistent($assistent);
-                    $entity->setTask($task);
-                    try {
-                        $em->persist($entity);
-                        $em->flush();
-                    } catch (\Doctrine\DBAL\DBALException $e) {
-                        $error = $error + 1;
-                    }
+                    $this->setAssistentToGroup($task, $newassistent);
                 }
             }
         }
         return new Response('success');
+    }
+
+    public function setAssistentToGroup($task, $newassistent){
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $error = 0;
+        $goassistent = $em->getRepository('AppBundle:Goassistent')->findOneBy(
+            [
+                'assistent'   => intval($newassistent),
+                'task'      => $task
+            ]);
+        if(is_null($goassistent)) {
+            $entity = new Goassistent($user);
+            $assistent = $em->getRepository('AppBundle:Usuario')->find(intval($newassistent));
+            $entity->setAssistent($assistent);
+            $entity->setTask($task);
+            $em->persist($entity);
+            $em->flush();
+        }
     }
 }
