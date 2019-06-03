@@ -5,7 +5,8 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class Usuario
@@ -14,7 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="usuario")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UsuarioRepository")
- * 
+ * @UniqueEntity(fields={"email"}, message="Correo asignado previamente a otro usuario")
  * @author Roberto Zuñiga Araya <roberto.zuniga.araya@gmail.com>
  */
 class Usuario extends BaseUser
