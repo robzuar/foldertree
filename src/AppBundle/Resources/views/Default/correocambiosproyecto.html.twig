@@ -467,7 +467,7 @@
                                     {% if key == "new" %}
                                         <tr>
                                             <td>
-                                                Valor Actual :
+                                                Valor Actual :<br>
                                                 {% for key, valor in cambio %}
                                                     {% if key == 'dateend' %}
                                                         Fecha termino obra: {{ valor|date('d-m-Y') }} <br>
@@ -475,6 +475,8 @@
                                                         Fecha de escrituración: {{ valor|date('d-m-Y') }} <br>
                                                     {% elseif key == 'datelast' %}
                                                         Fecha última cuota: {{ valor|date('d-m-Y') }} <br>
+                                                    {% elseif key == 'datedelivery' %}
+                                                        Fecha de entrega: {{ valor }} <br>
                                                     {% endif %}
                                                 {% endfor %}
                                             </td>
@@ -484,7 +486,7 @@
                                     {% if key == "old" %}
                                         <tr>
                                         <td>
-                                            Valor Anterior :
+                                            Valor Anterior :<br>
                                             {% for key, valor in cambio %}
                                                 {% if key == 'dateend' %}
                                                     Fecha termino obra: {{ valor|date('d-m-Y') }} <br>
@@ -492,6 +494,8 @@
                                                     Fecha de escrituración: {{ valor|date('d-m-Y') }} <br>
                                                 {% elseif key == 'datelast' %}
                                                     Fecha última cuota: {{ valor|date('d-m-Y') }} <br>
+                                                {% elseif key == 'datedelivery' %}
+                                                    Fecha de entrega: {{ valor }} <br>
                                                 {% endif %}
                                             {% endfor %}
                                         </td>

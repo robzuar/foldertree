@@ -131,7 +131,7 @@ class ProyectoController extends CrudController
         $user = $this->getUser();
         $time = new \DateTime();
         $today = $time->format('Y-m-d');
-        $parametroemail = $this->get('service_container')->getParameter('sendemail');
+
         $grupos = $em->getRepository('AppBundle:GrupoCambios')->findAll();
         $cambios = $em->getRepository('AppBundle:LogProyecto')->findOneBy(
             [
@@ -164,12 +164,9 @@ class ProyectoController extends CrudController
 
                 foreach ($newarray as $usuario) {
 
-                    if ($parametroemail == true) {
-                        $strTo = $usuario->getEmail();
-                    } else {
-                        //$strTo = $user->getEmail();
-                        $strTo = 'roberto.zuniga.araya@gmail.com';
-                    }
+
+                    $strTo = $usuario->getEmail();
+
 
                     $strSubject = $subject;
                     $strBody = $this->renderView('AppBundle:Default:correocambiosproyecto.html.twig',
