@@ -63,7 +63,7 @@ class MailService
 
         foreach ($addresses  as $email){
             $message = (new \Swift_Message('My important subject here'))
-                ->setFrom($this->container->getParameter('mailer_sender'))
+                ->setFrom($this->container->getParameter('mailer_user'))
                 ->setTo($email)
                 ->setSubject($subject)
                 ->setBody($body, 'text/html')

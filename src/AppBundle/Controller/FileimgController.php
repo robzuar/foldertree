@@ -143,7 +143,7 @@ class FileimgController extends CrudController
                 );
 
                 $message = (new \Swift_Message('My important subject here'))
-                    ->setFrom($this->container->getParameter('mailer_sender'))
+                    ->setFrom($this->container->getParameter('mailer_user'))
                     ->setTo($strTo)
                     ->setSubject($strSubject)
                     ->setBody($strBody, 'text/html')
