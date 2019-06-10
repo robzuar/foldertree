@@ -103,19 +103,23 @@ class FileimgController extends CrudController
         $arraygrupotousuarios = [];
         $newarray = [];
 
-        if(count($listadogrupos) >= 1) {
-            foreach ($listadogrupos as $grupo) {
-                $entgrupo = $em->getRepository('AppBundle:Group')->find($grupo);
-                /** Usuario $arraygrupotousuarios */
-                $arraygrupotousuarios[] = $em->getRepository('AppBundle:Usuario')->getUserGroups($entgrupo);
-            }
+        if (!is_null($listadogrupos)){
+
+                foreach ($listadogrupos as $grupo) {
+                    $entgrupo = $em->getRepository('AppBundle:Group')->find($grupo);
+                    /** Usuario $arraygrupotousuarios */
+                    $arraygrupotousuarios[] = $em->getRepository('AppBundle:Usuario')->getUserGroups($entgrupo);
+                }
+
         }
-        if(count($listadousuarios) >= 1) {
-            foreach($listadousuarios as $usua) {
-                $arraygrupotousuarios[0][] = $em->getRepository('AppBundle:Usuario')->find($usua);
-            }
+        if (!is_null($listadousuarios)) {
+
+                foreach ($listadousuarios as $usua) {
+                    $arraygrupotousuarios[0][] = $em->getRepository('AppBundle:Usuario')->find($usua);
+                }
+
         }
-        if(count($listadogrupos) >= 1 || count($listadousuarios) >= 1) {
+        if(!is_null($listadogrupos) || !is_null($listadousuarios)) {
             $newarray = array_unique($arraygrupotousuarios[0]);
         }
         if($newarray  >= 1){
@@ -343,6 +347,8 @@ class FileimgController extends CrudController
             }
             $listadosgrupos =  $request->get('grupoarray');
             $listadousarios =  $request->get('userarray');
+
+
 
             $this->correoAviso($listadousarios, $listadosgrupos, $nombrearchivos, $id);
 

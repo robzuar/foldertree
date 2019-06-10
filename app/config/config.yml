@@ -81,12 +81,12 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: '%mailer_transport%'
-    host: '%mailer_host%'
-    username: '%mailer_user%'
-    password: '%mailer_password%'
-    #url: 'smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=9c466273595a85&password=626437331365d1'
-    #spool:     { type: memory }
+    #transport: '%mailer_transport%'
+    #host: '%mailer_host%'
+    #username: '%mailer_user%'
+    #password: '%mailer_password%'
+    url: 'smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=9c466273595a85&password=626437331365d1'
+    spool:     { type: memory }
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb' and 'couchdb'
