@@ -236,11 +236,9 @@ class TaskdocumentController extends CrudController
         }
 
         $parametroemail = $this->get('service_container')->getParameter('sendemail');
-        if ($parametroemail == true) {
-            $strTo = $user->getEmail();
-        } else {
-            $strTo = 'roberto.zuniga.araya@gmail.com';
-        }
+
+        $strTo = $user->getEmail();
+
 
         $strSubject = 'Se ha '.$status.' un Proyecto ';
         $strBody = $this->renderView('AppBundle:Default:goemail.html.twig',

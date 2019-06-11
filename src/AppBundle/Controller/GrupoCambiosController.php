@@ -122,12 +122,7 @@ class GrupoCambiosController extends CrudController
 
             foreach ($arraygrupotousuarios as $usuario) {
 
-                 if($parametroemail == true) {
-                    $strTo = $usuario->getEmail();
-                }else{
-                    $strTo = $user->getEmail();
-                    //$strTo = 'roberto.zuniga.araya@gmail.com';
-                }
+                $strTo = $usuario->getEmail();
 
                 $strSubject = $subject;
                 $strBody = $this->renderView('AppBundle:Fileimg:correoaviso.html.twig',

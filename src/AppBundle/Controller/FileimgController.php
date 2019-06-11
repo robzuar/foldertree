@@ -123,14 +123,10 @@ class FileimgController extends CrudController
             $newarray = array_unique($arraygrupotousuarios[0]);
         }
         if($newarray  >= 1){
-            $subject = 'Se ha Creado un nuevo Archivo: ';
+            $subject = 'Se ha subido un nuevo Archivo al sistema GO: ';
             foreach ($newarray as $usuario) {
-                if($parametroemail == true) {
-                    $strTo = $usuario->getEmail();
-                }else{
-                    $strTo = 'roberto.zuniga.araya@gmail.com';
-                    $subject = 'TEST/Se ha Creado un nuevo Archivo: ';
-                }
+
+                $strTo = $usuario->getEmail();
 
                 $strSubject = $subject;
                 $strBody = $this->renderView('AppBundle:Fileimg:correoaviso.html.twig',

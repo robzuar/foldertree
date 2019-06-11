@@ -44,12 +44,8 @@ class MailHelper
 
             foreach ($arraygrupotousuarios as $usuario) {
 
-                if($parametroemail == true) {
-                    $strTo = $usuario->getEmail();
-                }else{
-                    $strTo = $userlogued->getEmail();
-                    //$strTo = 'roberto.zuniga.araya@gmail.com';
-                }
+
+                $strTo = $usuario->getEmail();
 
                 $strSubject = $subject;
                 $strBody = $this->renderView('AppBundle:Fileimg:correoaviso.html.twig',
