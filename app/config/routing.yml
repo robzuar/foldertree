@@ -15,7 +15,7 @@ fos_js_routing:
 another_route:
     path: /profile
     defaults:
-        _controller: AppBun dle:Default:redirect
+        _controller: AppBundle:Default:redirect
         route: redirect
         permanent: true
 

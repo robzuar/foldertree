@@ -71,7 +71,7 @@
 <script src="{{ asset('bundles/app/assets/plugins/jstree/dist/jstree.min.js') }}"></script>
 <script src="{{ asset('bundles/app/assets/js/ui-tree.demo.min.js') }}"></script>
 <script src="{{ asset('bundles/app/assets/plugins/bootstrap-sweetalert/sweetalert.min.js') }}"></script>
-
+<script src="{{ asset('bundles/app/assets/appjs/devcrud.js') }}"></script>
 <script>
     //var newjson = "";
     //var data = [];
@@ -244,17 +244,19 @@
 
     $('#addchecker').on('click', function(){
         guardarTwo('checker');
+        loading(true);
         loadTree({{ idProyecto }});
         //console.log(checked_ids);
     });
 
     $('#addassistent').on('click', function(){
         guardarTwo('assistent');
+        loading(true);
         loadTree({{ idProyecto }});
     });
 
     function guardar(selection){
-        checkLoadingDevel(true);
+        loading(true);
         var checked_ids = [];
         var allgood = true;
         var error = false;
@@ -316,7 +318,7 @@
         }
         $("#"+selection+" > option").removeAttr("selected");
         $('input[type=checkbox]').prop('checked',false);
-        checkLoadingDevel(false);
+        loading(false);
 
         if(error){
             var title = "Campo vacio";
@@ -451,7 +453,7 @@
     });
 
     function guardarTwo(selection){
-        console.log('entro a guardar');
+        console.log('entro a guardar 2');
         var checked_ids = [];
         var selection_ids = [];
         var allgood = true;
@@ -480,7 +482,7 @@
             error = true;
         }
 
-        checkLoadingDevel(true);
+
         if(checked_ids.length != 0 && combo != 0 ) {
             var path= "";
             if(selection === 'checker'){
@@ -500,7 +502,7 @@
                 //dataType: "json",
                 url: path,
                 success: function (results) {
-                    checkLoadingDevel(false);
+                    loading(false);
                     //console.log(results);return false;
                     if (results === 'error') {
                         allgood = false;

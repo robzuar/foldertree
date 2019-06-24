@@ -76,8 +76,7 @@ class DefaultController extends Controller
         $user = $this->getUser();
 
         if(in_array('app-anteproyecto',$user->getAccesoNames())){
-            return $this->redirectToRoute('app_anteproyecto_index'
-        );
+            return $this->redirectToRoute('app_anteproyecto_index');
         }else{
             return $this->render('default/index.html.twig'
                 ,array(
