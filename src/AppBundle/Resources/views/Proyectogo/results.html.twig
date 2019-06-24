@@ -28,37 +28,30 @@
                     <tbody>
                     {% for entity in entities %}
                         {% if entity.enabled == 1 %}
-                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
-                            <tr>
-                                <td>
-                            <!--      <button class="btn btn-primary">Activo</button>{% else %}<button class="btn btn-default">Inactivo</button>{% endif %}
-                                      {% if entity.startedat is null %}
-                                        BORRADOR
-                                    {% else %}
-                                        CONFIGURADO
-                                    {% endif %}
-                                </td>-->
-                                <td><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-home"></i></span>{{ entity.name }}</td>
-                                <td>
-                                    {{ entity.inmobiliaria }}
-                                </td>
-                                <td>
-                                    {% if entity.startedat is null %}
-                                        {{ render(controller('AppBundle:Proyectogo:check', { 'id':  entity.id })) }}
-                                    {% else %}
-                                        Proyecto Iniciado
-                                    {% endif %}
-                                </td>
-                                <td class="col-md-2">
-                                    <a class="btn-details disabled-entity" title="Detalles" data-id="{{ entity.id }}" data-enabled="{{ entity.enabled }}">
-                                        <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-eye" aria-hidden="true"></i></span>Detalles
-                                    </a>
-                                    <br>
-                                    <a class="btn-view" title="ver árbol" data-id="{{ entity.id }}">
-                                        <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-list-alt" aria-hidden="true"></i></span>Arbol
-                                    </a>
-                                </td>
-                            </tr>
+                            {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                                <tr>
+                                    <td><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-home"></i></span>{{ entity.name }}</td>
+                                    <td>
+                                        {{ entity.inmobiliaria }}
+                                    </td>
+                                    <td>
+                                        {% if entity.startedat is null %}
+                                            {{ render(controller('AppBundle:Proyectogo:check', { 'id':  entity.id })) }}
+                                        {% else %}
+                                            Proyecto Iniciado
+                                        {% endif %}
+                                    </td>
+                                    <td class="col-md-2">
+                                        <a class="btn-details disabled-entity" title="Detalles" data-id="{{ entity.id }}" data-enabled="{{ entity.enabled }}">
+                                            <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-eye" aria-hidden="true"></i></span>Detalles
+                                        </a>
+                                        <br>
+                                        <a class="btn-view" title="ver árbol" data-id="{{ entity.id }}">
+                                            <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-list-alt" aria-hidden="true"></i></span>Arbol
+                                        </a>
+                                    </td>
+                                </tr>
+
                         {% endif %}
                         {% endif %}
                     {% endfor %}
