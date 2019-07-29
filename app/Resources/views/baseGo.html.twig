@@ -110,7 +110,6 @@
             <ul id="menugo" class="nav">
                 <li class="nav-header" style="font-size: medium"> Menú</li>
                 <li><a id="menuinicio" href="{{ path('homepage') }}"><i class="ion-easel"></i>  Inicio</a></li>
-                <li><a id="dashboardgo" href="{{ path('go') }}"><i class="ion-clipboard"></i><span> Inicio Go</span></a></li>
                 {% if is_granted('ROLE_SUPER_ADMIN') %}
                     <li class="has-sub">
                         <a href="javascript:;">
@@ -122,9 +121,10 @@
                             <li><a class="introsubmenu" id="menuusuarios" href="{{ path('app_usuario_index') }}"><i class="ion-person-stalker"></i><span>  Usuarios</span></a></li>
                             <li><a class="introsubmenu" id="menudocumentos" href="{{ path('app_document_index') }}"><i class="ion-document-text"></i><span> Documentos</span></a></li>
                            <!-- <li><a class="introsubmenu" id="menutareas" href="{{ path('app_taskdocument_index') }}"><i class="ion-clipboard"></i><span> Tareas Documentos</span></a></li> -->
+                            <li><a id="menuproyectos" href="{{ path('app_proyectogo_index') }}"><i class="ion-home"></i><span> Proyectos</span></a></li>
                         </ul>
                     </li>
-                    <li><a id="menuproyectos" href="{{ path('app_proyectogo_index') }}"><i class="ion-home"></i><span> Proyectos</span></a></li>
+                    <li><a id="dashboardgo" href="{{ path('go') }}"><i class="ion-clipboard"></i><span> Inicio Go</span></a></li>
                 {% endif %}
                 <!-- begin sidebar minify button -->
                 <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>

@@ -58,8 +58,8 @@ twig:
         sistema: '%sistema%'
         correosoporte: 'soporte@soporte.cl'
         company: 'imagina'
-        sys_checker: 'Revisor'
-        sys_assistent: 'Responsable'
+        sys_checker: 'Responsable'
+        sys_assistent: 'Revisor'
 
 # Doctrine Configuration
 doctrine:
@@ -81,12 +81,12 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-    #transport: '%mailer_transport%'
-    #host: '%mailer_host%'
-    #username: '%mailer_user%'
-    #password: '%mailer_password%'
-    url: 'smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=9c466273595a85&password=626437331365d1'
+    transport: '%mailer_transport%'
+    host: '%mailer_host%'
+    username: '%mailer_user%'
+    password: '%mailer_password%'
     spool:     { type: memory }
+    #url: 'smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=9c466273595a85&password=626437331365d1'
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb' and 'couchdb'

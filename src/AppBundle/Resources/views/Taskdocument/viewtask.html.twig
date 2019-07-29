@@ -31,18 +31,8 @@
                                 </td>
                                 <td>
                                     <i class="fas fa-sm fa-fw m-r-10 fa-tasks"></i>  {{ entity.document.name }} <br><strong>Cantidad de Archivos : {{ totalfile }} {% if entity.document.numfiles is not null %}/{{ entity.document.numfiles }} archivos {% endif %}</strong>
-                                    <!-- <a href="javascript:void(0)" onclick="viewnotes({{ entity.id }})" title="Ver Notas"><i class="fas fa-sm fa-fw m-r-10 fa-comments"></i>  {{ entity.document.name }}</a> <br><strong>Cantidad de Archivos : {{ totalfile }} </strong> -->
                                 </td>
                                 <td>
-                                    <!--{% if totalfile > 0 and totalfile < 3 %}
-                                        {% for file in entity.file %}
-                                            <a href="{{ asset('media/Task/' ~ file.file) }}" download="{{ file.link }}{{ file.file |slice(-4) }}" class="btn btn-xs"><i class="fa fa-download"></i>  {{ file.link }}</a><a href="javascript:void(0)" onclick="delete({{ entity.id }})" class="btn btn-sm btn-icon btn-danger"><i class="fa fa-unlink"></i>  </a>
-                                        {% endfor %}
-                                    {% elseif totalfile > 0 %}
-                                        Sin Archivos
-                                    {% else %}
-                                        <a onclick="viewFilesTask({{ entity.id }})"><i class="fa fa-eye"></i>   más archivos...</a>
-                                    {% endif %} -->
                                     {%  if totalfile > 0 %}
                                         <a onclick="viewFilesTask({{ entity.id }})"><i class="fa fa-eye"></i>  archivos</a>
                                     {% else %}
@@ -50,24 +40,6 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ entity.estado }}</td>
-                                <!--  <td>{{entity.asignedat|time_diff("now"|date("m/d/Y")) }} días</td> -->
-                                <!--
-                                <td>
-                                    {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
-                                        {% if(entity.asignedat is not null) %}
-                                            {%  set dias =  date(entity.asignedat).diff(date("now"))  %}
-                                            Solicitado hace {{ dias.days }} días
-                                        {% else %}
-                                            No Asignado
-                                        {% endif %}
-                                    {% elseif entity.estado == "REVISION" %}
-                                        Esperando Revisión
-                                    {% elseif entity.estado == "COMPLETADO" %}
-                                        {%  set completado =  date(entity.asignedat).diff(date(entity.dateCompleted))  %}
-                                        Completado en {{ completado.days }} días
-                                    {% endif %}
-                                </td>
-                                -->
                                 <td>
                                     {% if not is_granted('ROLE_SUPER_ADMIN') %}
                                         {% if entity.estado != "COMPLETADO" %}

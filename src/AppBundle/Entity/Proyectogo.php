@@ -76,6 +76,14 @@ class Proyectogo
         return $this->getName();
     }
 
+    public function getStatusProyect(){
+        if($this->getEnabled() == true){
+            return "Activo";
+        }else{
+            return "No Activo";
+        }
+    }
+
     /**
      * Get id
      *

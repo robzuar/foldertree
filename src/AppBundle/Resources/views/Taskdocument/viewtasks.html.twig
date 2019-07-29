@@ -37,6 +37,8 @@
                                     {% set projectassistent = 'si'  %}
                                 {% endif %}
                             {% endfor %}
+                            {{ dump(projectassistent) }}
+                            {{ dump(projectchecker) }}
                             <tr>
                                 <td>
                                     {% if entity.proyectogo is not null %}
@@ -68,7 +70,6 @@
                                                     1<a class="btn-default" href="javascript:void(0)" onclick="rejecttask({{ entity.id }})" title="Rechazar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-window-close"></i>  </span> Rechazar</a><br>
                                                     2<a class="btn-default" href="javascript:void(0)" onclick="approvetask({{ entity.id }})" title="Aceptar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-check-circle"></i>  </span> Aceptar</a><br>
                                                 {% endif %}
-
                                                     {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
                                                         {% if entity.document.numfiles is not null %}
                                                             {% if entity.document.numfiles == totalfile %}
@@ -82,9 +83,8 @@
                                                                 6<a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
                                                             {% endif %}
                                                         {% endif %}
-
+                                                    {% endif %}
                                                 {% endif %}
-                                            {% endif %}
 
                                             {% if  projectassistent ==  'si' %}
                                                 {% if entity.estado == "PENDIENTE" or entity.estado == "RECHAZADO" %}
@@ -95,7 +95,7 @@
                                                             8<a class="btn-default" href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-cloud-upload-alt"></i>  </span> Subir Archivo</a><br>
                                                         {% endif %}
                                                     {% else %}
-                                                        9<a class="btn-default" href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-cloud-upload-alt"></i>  </span> Subir Archivo</a><br>
+                                                        <a class="btn-default" href="javascript:void(0)" onclick="uploadFileTask({{ entity.id }})" title="Subir Archivo"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-cloud-upload-alt"></i>  </span> Subir Archivo</a><br>
                                                         {% if totalfile > 0 %}
                                                             10<a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
                                                         {% endif %}
@@ -116,9 +116,7 @@
                                                 <a class="btn-default" href="javascript:void(0)" onclick="rejecttask({{ entity.id }})" title="Rechazar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-window-close"></i>  </span> Rechazar</a><br>
                                                 <a class="btn-default" href="javascript:void(0)" onclick="approvetask({{ entity.id }})" title="Aceptar"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-check-circle"></i>  </span> Aceptar</a><br>
                                             {% else %}
-                                                {% if entity.estado == "COMPLETADO"  %}
-                                                    Sin Acciones
-                                                {% else %}
+
                                                     {% if entity.document.numfiles is not null %}
                                                         {% if entity.document.numfiles == totalfile %}
                                                             <a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
@@ -131,7 +129,6 @@
                                                             <a class="btn-default" href="javascript:void(0)" onclick="requestReview({{ entity.id }})" title="Solicitar Revisión"><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-edit fa-align-justify"></i>  </span> Solicitar Revisión</a><br>
                                                         {% endif %}
                                                     {% endif %}
-                                                {% endif %}
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}

@@ -22,6 +22,7 @@
                     </thead>
                     <tbody>
                     {% for entity in entities %}
+                        {% if entity.enabled == 1 %}
                         <tr>
                             <td>
                                 {% if entity.startedat is not null %}
@@ -41,6 +42,7 @@
                                 {% endif %}
                             </td>
                         </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>

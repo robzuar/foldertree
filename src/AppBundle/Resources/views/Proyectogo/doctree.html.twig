@@ -379,13 +379,16 @@
 
     function customMenuProyecto(node) {
         var tree = $("#proyectotree").jstree(true);
+        var name = $("#proyectotree").jstree().get_selected(true)[0].text;
+        name = name.split("//");
+        name = name[0];
         var items2 = {
             delete : {
-                "label" : "Eliminar2",
+                "label" : "Eliminar",
                 "action" : function(data) {
                     swal({
-                        title: "Está seguro que desea eliminar el archivo/carpeta?",
-                        text: "Despues de eliminar no será posible recuperar el archivo/carpeta!",
+                        title: "Está seguro que desea eliminar el archivo/carpeta "+name+" ?",
+                        text: "Despues de eliminar no será posible recuperar el archivo/carpeta "+name+" !",
                         type: "warning",
                         buttons:
                             {

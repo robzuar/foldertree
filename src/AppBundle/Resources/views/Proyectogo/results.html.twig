@@ -19,6 +19,7 @@
                 <table id="table-entities" class="table table-bordered table-responsive">
                     <thead>
                     <tr>
+                        <th>Estado</th>
                         <th>Nombre</th>
                         <th>Inmobiliaria</th>
                         <th>Inicio</th>
@@ -27,32 +28,29 @@
                     </thead>
                     <tbody>
                     {% for entity in entities %}
-                        {% if entity.enabled == 1 %}
                             {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
                                 <tr>
+                                    <td>{{ entity.statusProyect }}</td>
                                     <td><span class="fa-stack fa-sm text-inverse"><i class="fas fa-sm fa-fw m-r-10 fa-home"></i></span>{{ entity.name }}</td>
-                                    <td>
-                                        {{ entity.inmobiliaria }}
-                                    </td>
-                                    <td>
+                                    <td>{{ entity.inmobiliaria }}</td>
+                                    <td class="col-md-1">
                                         {% if entity.startedat is null %}
                                             {{ render(controller('AppBundle:Proyectogo:check', { 'id':  entity.id })) }}
                                         {% else %}
                                             Proyecto Iniciado
                                         {% endif %}
                                     </td>
-                                    <td class="col-md-2">
-                                        <a class="btn-details disabled-entity" title="Detalles" data-id="{{ entity.id }}" data-enabled="{{ entity.enabled }}">
+                                    <td class="col-md-3">
+                                        <div>
+                                        <button class="btn btn-default btn-sm btn-details disabled-entity" title="Detalles" data-id="{{ entity.id }}" data-enabled="{{ entity.enabled }}">
                                             <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-eye" aria-hidden="true"></i></span>Detalles
-                                        </a>
-                                        <br>
-                                        <a class="btn-view" title="ver árbol" data-id="{{ entity.id }}">
+                                        </button>
+                                        <button class="btn btn-default btn-sm btn-view" title="ver árbol" data-id="{{ entity.id }}">
                                             <span class="fa-stack fa-1x text-inverse"><i class="fas fa-1x fa-fw m-r-10 fa-list-alt" aria-hidden="true"></i></span>Arbol
-                                        </a>
+                                        </button>
+                                        </div>
                                     </td>
                                 </tr>
-
-                        {% endif %}
                         {% endif %}
                     {% endfor %}
                     </tbody>
