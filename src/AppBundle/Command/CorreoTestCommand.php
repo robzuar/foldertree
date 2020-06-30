@@ -67,6 +67,7 @@ class CorreoTestCommand extends ContainerAwareCommand
         $strTo = 'roberto.zuniga.araya@gmail.com';
         $emailfrom = 'develsoftcl@gmail.com';//$input->getArgument('emailfrom');
 
+        $mailer =  $this->getContainer()->get('mailer');
 
         $message = \Swift_Message::newInstance()
             ->setSubject($strSubject)
@@ -74,9 +75,12 @@ class CorreoTestCommand extends ContainerAwareCommand
             ->setTo($strTo)
             ->setContentType("text/html")
             ->setBody($strBody);
-        $mail = $this->getContainer()->get('mailer')->send($message);
-
-        $output->writeln($mail);
+        try {
+            $mailer->send($message);
+        }
+        catch (\Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
     }
 }
