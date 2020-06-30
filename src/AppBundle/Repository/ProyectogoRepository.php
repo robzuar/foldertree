@@ -26,10 +26,10 @@ class ProyectogoRepository extends EntityRepository
 
             ;
 
-        //$entities =  $query->getQuery()->getResult();
+        $entities =  $query->getQuery()->getResult();
 
         //var_dump($entities);exit;
-        //return $entities;
+        return $entities;
 
     }
 
@@ -116,11 +116,6 @@ class ProyectogoRepository extends EntityRepository
             ->andWhere('task.estado != :estado')
         ;
 
-        if($element == null){
-
-        }else{
-
-        }
 
         if($element == 'idproyecto'){
             $query

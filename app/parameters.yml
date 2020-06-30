@@ -1,0 +1,18 @@
+parameters:
+    database_host: 127.0.0.1
+    database_port: 3306
+    #database_name: app-img-reload
+    #database_password: imagina2017
+    #database_user: root
+    database_user: root
+    database_password: marcelo2602..
+    database_name: appimagina
+    send_email: true
+    mailer_transport: gmail
+    mailer_host: null
+    mailer_user: comunicaciones@imagina.cl
+    mailer_sender: comunicaciones@imagina.cl
+    address: comunicaciones@imagina.cl
+    mailer_password: imagina2017
+    secret: ThisTokenIsNotSoSecretChangeIt
+
