@@ -65,7 +65,7 @@ class CorreoTestCommand extends ContainerAwareCommand
 
 
         $strTo = 'roberto.zuniga.araya@gmail.com';
-        $emailfrom = $this->getContainer()->getParameter('address');//'develsoftcl@gmail.com';//$input->getArgument('emailfrom');
+        $emailfrom = 'develsoftcl@gmail.com';//$input->getArgument('emailfrom');
 
 
         $message = \Swift_Message::newInstance()
