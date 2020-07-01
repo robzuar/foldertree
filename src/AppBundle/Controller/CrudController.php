@@ -311,4 +311,32 @@ abstract class CrudController extends Controller
         $this->get('mailer')->send($message);
 
     }
+
+    /**
+     * @param $addresses
+     * @param $subject
+     * @param $body
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function sendEmail($addresses, $subject, $body)
+    {
+        $emails= [];
+        $emailSupports= [];
+
+
+
+        //var_dump($addresses);die();
+
+        //foreach ($addresses  as $email){
+        $message = (new \Swift_Message('My important subject here'))
+            ->setFrom($this->container->getParameter('mailer_sender'))
+            ->setTo($addresses)
+            ->setSubject($subject)
+            ->setBody($body, 'text/html')
+        ;
+        $this->get('mailer')->send($message);
+        // }
+    }
 }

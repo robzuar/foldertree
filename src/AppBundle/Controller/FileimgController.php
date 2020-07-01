@@ -96,7 +96,6 @@ class FileimgController extends CrudController
         $em = $this->getDoctrine()->getManager();
         /** @var Usuario $user */
         $user = $this->getUser();
-        $parametroemail = $this->get('service_container')->getParameter('sendemail');
         $cat = $em->getRepository('AppBundle:Category');
         $entity = $em->getRepository('AppBundle:Category')->find($idCategory);
         $htmlTree = $cat->getPath($entity);

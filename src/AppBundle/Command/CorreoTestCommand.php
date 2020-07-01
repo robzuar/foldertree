@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use AppBundle\Controller\CrudController;
 
 class CorreoTestCommand extends ContainerAwareCommand
 {
@@ -30,57 +31,14 @@ class CorreoTestCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $strBody = "<html>
-                            <head></head>
-                            <body>
-                            <h1>
-                                Estimado(a)
-                            </h1>
-                         ";
-        $strBody .= "
-                            <p>
-                                test 
-                            </p>    
-                     
-                            ";
-        $strBody .= "
-                            <br>
-                            <br>
-                            <br>
-                            <p>
-                                Saludos cordiales,
-                            </p>
-                            <br>
-                            <br>
-                            <p>
-                                <strong>
-                                   Comunicaciones Imagina
-                                </strong>
-                            </p>
-                            <br>
-                            </body>
-                        </html>";
-
+        $strBody='Testom';
         $strSubject = 'Test';
-
-
         $strTo = 'roberto.zuniga.araya@gmail.com';
-        $emailfrom = 'develsoftcl@gmail.com';//$input->getArgument('emailfrom');
 
-        $mailer =  $this->getContainer()->get('mailer');
+        $mailer =  $this->getContainer()->get('app_mailer');
+        dump($mailer->sendEmail($strTo, $strSubject,$strBody));
 
-        $message = \Swift_Message::newInstance()
-            ->setSubject($strSubject)
-            ->setFrom($emailfrom)
-            ->setTo($strTo)
-            ->setContentType("text/html")
-            ->setBody($strBody);
-        try {
-            $mailer->send($message);
-        }
-        catch (\Swift_TransportException $e) {
-            echo $e->getMessage();
-        }
+        echo 'fin';
 
     }
 }

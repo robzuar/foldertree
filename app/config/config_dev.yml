@@ -31,5 +31,5 @@ monolog:
         #    level: info
 
 swiftmailer:
-    url: 'smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=9c466273595a85&password=626437331365d1'
+    #url: 'smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=9c466273595a85&password=626437331365d1'
     spool:     { type: memory }

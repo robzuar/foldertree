@@ -9,9 +9,8 @@ services:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
     app_mailer:
-        class: AppBundle\Services\MailerService
-        arguments: ['@service_container']
-
+        class: AppBundle\Service\MailService
+        arguments: ["@mailer", "@twig", "@service_container"]
 
         # Doctrine Extension listeners to handle behaviors
     gedmo.listener.tree:
@@ -79,6 +78,3 @@ services:
         tags:
         - { name: twig.extension }
 
-    appmailservice:
-        class: AppBundle\Service\MailService
-        arguments: ["@mailer", "@templating", "@service_container"]

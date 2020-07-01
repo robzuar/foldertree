@@ -24,7 +24,7 @@ class MailHelper
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $userlogued = $this->em->getRepository('AppBundle:Usuario')->find($user->getId());
         /** @var Usuario $user */
-        $parametroemail = $this->container->get('service_container')->getParameter('sendemail');
+
         $arraygrupotousuarios = [];
 
 
