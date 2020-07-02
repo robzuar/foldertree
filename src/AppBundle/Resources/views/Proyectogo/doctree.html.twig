@@ -380,8 +380,13 @@
     function customMenuProyecto(node) {
         var tree = $("#proyectotree").jstree(true);
         var name = $("#proyectotree").jstree().get_selected(true)[0].text;
+
         name = name.split("//");
-        name = name[0];
+        name = name[0].split("Resp");
+        if (name.isArray){
+            name = name[0].split("Rev");
+            name = name[0];
+        }
         var items2 = {
             delete : {
                 "label" : "Eliminar",

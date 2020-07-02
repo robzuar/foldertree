@@ -34,14 +34,14 @@ function loading(status){
 }
 
 function loadTable(){
-    loading(true);
+    checkLoadingDevel(true);
     $.ajax({
         type: "GET",
         async: true,
         url: paths._reload,
         success: function(results) {
             $("#results").html("").html(results);
-            loading(false);
+            checkLoadingDevel(false);
             documentOnReady();
         },
         error: function(e){

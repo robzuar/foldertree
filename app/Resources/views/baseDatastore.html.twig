@@ -77,8 +77,7 @@
 <body class="bg-silver">
 <div id="WindowLoad"></div>
 <!-- begin #page-loader -->
-<div id="page-loader" class="fade in"><span class="spinner"></span></div>
-<!-- end #page-loader -->
+<div id="page-loader"><span class="spinner"></span></div>
 <!-- end #page-loader -->
 
 <!-- begin #page-container -->
@@ -130,7 +129,7 @@
 
                 {% endif %}
                 {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN')  %}
-                <li><a href="{{ path('log') }}"><i class="fa fa-align-left"></i><span>  Log</span></a></li>
+                    <li><a href="{{ path('log') }}"><i class="fa fa-align-left"></i><span>  Log</span></a></li>
                 {% endif %}
                 <li><a href="{{ path('logproyecto') }}"><i class="fa fa-align-left"></i><span>  Log de Proyecto</span></a></li>
                 {{ render(controller('AppBundle:Default:menu')) }}
@@ -147,8 +146,8 @@
 
     <!-- begin #content -->
     <div id="content" class="content">
-
-            {% block body %}{% endblock %}
+        <div id="initmensaje"></div>
+        {% block body %}{% endblock %}
     </div>
     <!-- end #content -->
 
@@ -228,91 +227,91 @@
 
             //console.log(pageName);return false;
 
-                var intro = introJs();
-                intro.setOptions({
-                    showStepNumbers: false,
-                    showBullets: false,
-                    skipLabel: 'Salir',
-                    doneLabel: 'Salir',
-                    nextLabel: 'Siguiente',
-                    prevLabel: 'Anterior',
-                    steps: [
-                        {
-                            element: '#addpermiso',
-                            intro: 'Permite agregar una nueva carpeta'
-                        },
-                        {
-                            element: '#addpermisotocategory',
-                            intro: 'Permite añadir permisos a la carpeta'
+            var intro = introJs();
+            intro.setOptions({
+                showStepNumbers: false,
+                showBullets: false,
+                skipLabel: 'Salir',
+                doneLabel: 'Salir',
+                nextLabel: 'Siguiente',
+                prevLabel: 'Anterior',
+                steps: [
+                    {
+                        element: '#addpermiso',
+                        intro: 'Permite agregar una nueva carpeta'
+                    },
+                    {
+                        element: '#addpermisotocategory',
+                        intro: 'Permite añadir permisos a la carpeta'
 
-                        },
-                        {
-                            element: '#editcategory',
-                            intro: 'Editar Nombre Carpeta'
-                        },
-                        {
-                            element: '#deletecategory',
-                            intro: 'Remover Carpeta'
-                        },
-                        {
-                            element: '#vercontenido',
-                            intro: 'Visualizar contenido de carpeta'
-                        },
-                        {
-                            element: '#agregardatosproyecto',
-                            intro: 'Agregar datos de proyecto'
-                        },
-                        {
-                            element: '#editardatosproyecto',
-                            intro: 'Editar datos del proyecto'
-                        },
-                        {
-                            element: '#subirarchivos',
-                            intro: 'Subir archivos al sistema'
-                        },
-                        {
-                            element: '#verhistoriaarchivo',
-                            intro: 'Lista todas las versiones de un archivo'
-                        },
-                        {
-                            element: '#descargaarchivos',
-                            intro: 'Descarga archivo del sistema'
-                        },
-                        {
-                            element: '#fileupload',
-                            intro: 'Seleccionar un o unos archivos(multiple con botón control/ ctrl'
-                        },
-                        {
-                            element: '#correo',
-                            intro: 'Seleccionar para enviar correo de aviso de archivo/s'
-                        },
-                        {
-                            element: '.btn-permisotocategory',
-                            intro: 'Agregar Grupos de Permiso para visualizar contenidos del menú'
-                        },
-                        {
-                            element: '.btn-details',
-                            intro: 'Ver ventana con detalles, botón Deshabilitar, botón Editar'
-                        },
-                        {
-                            element: '.btn-usertogroup',
-                            intro: 'Agregar usuarios a Grupos de Correo'
-                        },
-                        {
-                            element: '.btn-usertoacceso',
-                            intro: 'Agregar usuarios a Grupos de Permisos'
-                        },
-                        {
-                            element: '.btn-add',
-                            intro: 'Agregar Nuevo Elemento'
-                        },
-                        {
-                            element: '#btn-esconder',
-                            intro: 'Remover Tabla de historial de archivo'
-                        }
-                    ].filter(function(obj) { return $(obj.element).length; })
-                });
-                intro.start();
+                    },
+                    {
+                        element: '#editcategory',
+                        intro: 'Editar Nombre Carpeta'
+                    },
+                    {
+                        element: '#deletecategory',
+                        intro: 'Remover Carpeta'
+                    },
+                    {
+                        element: '#vercontenido',
+                        intro: 'Visualizar contenido de carpeta'
+                    },
+                    {
+                        element: '#agregardatosproyecto',
+                        intro: 'Agregar datos de proyecto'
+                    },
+                    {
+                        element: '#editardatosproyecto',
+                        intro: 'Editar datos del proyecto'
+                    },
+                    {
+                        element: '#subirarchivos',
+                        intro: 'Subir archivos al sistema'
+                    },
+                    {
+                        element: '#verhistoriaarchivo',
+                        intro: 'Lista todas las versiones de un archivo'
+                    },
+                    {
+                        element: '#descargaarchivos',
+                        intro: 'Descarga archivo del sistema'
+                    },
+                    {
+                        element: '#fileupload',
+                        intro: 'Seleccionar un o unos archivos(multiple con botón control/ ctrl'
+                    },
+                    {
+                        element: '#correo',
+                        intro: 'Seleccionar para enviar correo de aviso de archivo/s'
+                    },
+                    {
+                        element: '.btn-permisotocategory',
+                        intro: 'Agregar Grupos de Permiso para visualizar contenidos del menú'
+                    },
+                    {
+                        element: '.btn-details',
+                        intro: 'Ver ventana con detalles, botón Deshabilitar, botón Editar'
+                    },
+                    {
+                        element: '.btn-usertogroup',
+                        intro: 'Agregar usuarios a Grupos de Correo'
+                    },
+                    {
+                        element: '.btn-usertoacceso',
+                        intro: 'Agregar usuarios a Grupos de Permisos'
+                    },
+                    {
+                        element: '.btn-add',
+                        intro: 'Agregar Nuevo Elemento'
+                    },
+                    {
+                        element: '#btn-esconder',
+                        intro: 'Remover Tabla de historial de archivo'
+                    }
+                ].filter(function(obj) { return $(obj.element).length; })
+            });
+            intro.start();
 
         }
     }
