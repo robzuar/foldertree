@@ -80,7 +80,7 @@ class Correo90diasAntesCommand extends ContainerAwareCommand
 
 
                 if ($emailfrom && $emailto) {
-
+                    /*
                     $message = \Swift_Message::newInstance()
                         ->setSubject($strSubject)
                         ->setFrom($emailfrom)
@@ -88,6 +88,9 @@ class Correo90diasAntesCommand extends ContainerAwareCommand
                         ->setContentType("text/html")
                         ->setBody($strBody);
                     $this->getContainer()->get('mailer')->send($message);
+                    */
+                    $mailer =  $this->getContainer()->get('app_mailer');
+                    $mailer->sendEmail($strTo, $strSubject,$strBody);
                     $logmail = new Logmail($anteproyecto->getCreatedBy(), 'correo90dias', $anteproyecto->getNombre());
                 }
 
@@ -103,6 +106,7 @@ class Correo90diasAntesCommand extends ContainerAwareCommand
                     if (count($newarray) >= 1) {
                         foreach ($newarray as $usuario) {
                             //var_dump($usuario);exit;
+                            /*
                             $message = \Swift_Message::newInstance()
                                 ->setSubject($strSubject)
                                 ->setFrom($emailfrom)
@@ -110,7 +114,9 @@ class Correo90diasAntesCommand extends ContainerAwareCommand
                                 ->setContentType("text/html")
                                 ->setBody($strBody);
                             $this->getContainer()->get('mailer')->send($message);
-
+                            */
+                            $mailer =  $this->getContainer()->get('app_mailer');
+                            $mailer->sendEmail($usuario->getEmail(), $strSubject,$strBody);
                             $logmail = new Logmail($usuario, 'correo3dias', $anteproyecto->getNombre());
                             $em->persist($logmail);
                             $em->flush();

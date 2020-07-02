@@ -25,7 +25,7 @@ class MailService
      */
     public function sendEmail($to, $subject, $body)
     {
-            $from = 'klowncero@gmail.com';
+            $from = 'comunicaciones@imagina.cl';
             $message = (new \Swift_Message('My important subject here'))
                 ->setFrom($from)
                 ->setTo($to)

@@ -1,8 +1,9 @@
 <?php
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Anteproyecto;
+
 use AppBundle\Entity\Logmail;
+use AppBundle\Entity\Anteproyecto;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Bundle\FrameworkBundle\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -37,7 +38,7 @@ class Correo3diasAntesCommand extends ContainerAwareCommand
         $entities = $em
             ->getRepository('AppBundle:Anteproyecto')
             ->getAnteproyectosByDays($num);
-
+var_dump($entities);
         if($entities) {
             foreach ($entities as $anteproyecto) {
                 $fecha = $anteproyecto->getDateexpiration();
