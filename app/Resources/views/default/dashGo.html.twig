@@ -163,7 +163,7 @@
 
         $.ajax({
             type: 'POST',
-           async: false,
+           async: true,
             url: path,
             success: function(results) {
                 checkLoadingDevel(false);
@@ -193,7 +193,7 @@
                     var alerta = 'alert-danger';
                     messagesDevelDiv(alerta, message);
                     $('#results').html('');
-                    viewTask(globalperfil);
+                    //viewTask(globalperfil);
                 }
             },
             error: function(e){
@@ -218,7 +218,7 @@
                     var alerta = 'alert-success';
                     messagesDevelDiv(alerta, message);
                     $('#results').html('');
-                    viewTask(globalperfil);
+                    //viewTask(globalperfil);
                 }
             },
             error: function(e){
@@ -244,7 +244,7 @@
                     var title = 'Solicitud de Revisión';
                     messagesDevelSwal(alerta, message, title);
                     $('#results').html('');
-                    viewTask(globalperfil);
+                    //viewTask(globalperfil);
                 }else{
                     checkLoadingDevel(false);
                     var message = 'No se ha aceptado la solicitud de Revisión';

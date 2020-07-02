@@ -52,7 +52,7 @@ class LogProyectoController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AppBundle:LogProyecto')->findAll();
+        $entities = $em->getRepository('AppBundle:LogProyecto')->findBy( array(), array('id' => 'DESC') );
         $proyectos = $em->getRepository('AppBundle:Proyecto')->findAll();
 
 

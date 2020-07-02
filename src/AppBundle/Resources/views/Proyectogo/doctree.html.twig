@@ -302,7 +302,7 @@
 
                     $.ajax({
                         type: 'POST',
-                        async: false,
+                        async: true,
                         url: path,
                         success: function (results) {
                             if (results === 'error') {
@@ -501,7 +501,7 @@
 
             $.ajax({
                 type: 'POST',
-                async: false,
+                async: true,
                 //dataType: "json",
                 url: path,
                 success: function (results) {

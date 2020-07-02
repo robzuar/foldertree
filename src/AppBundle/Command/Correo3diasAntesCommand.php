@@ -38,7 +38,6 @@ class Correo3diasAntesCommand extends ContainerAwareCommand
         $entities = $em
             ->getRepository('AppBundle:Anteproyecto')
             ->getAnteproyectosByDays($num);
-var_dump($entities);
         if($entities) {
             foreach ($entities as $anteproyecto) {
                 $fecha = $anteproyecto->getDateexpiration();

@@ -222,7 +222,7 @@
                         var alerta = 'alert-danger';
                         messagesDevelDiv(alerta, message);
                         $('#results').html('');
-                        viewTask(globalperfil);
+                        //viewTask(globalperfil);
                     }
                 },
                 error: function(e){
@@ -247,7 +247,7 @@
                         var alerta = 'alert-success';
                         messagesDevelDiv(alerta, message);
                         $('#results').html('');
-                        viewTask(globalperfil);
+                        //viewTask(globalperfil);
                     }
                 },
                 error: function(e){
@@ -272,7 +272,7 @@
                         var alerta = 'alert-success';
                         messagesDevelDiv(alerta, message);
                         $('#results').html('');
-                        viewTask(globalperfil);
+                        //viewTask(globalperfil);
                     }
                 },
                 error: function(e){
@@ -301,6 +301,8 @@
             });
             checkLoadingDevel(false);
         }
+
+
         function eliminar_archivo(id) {
             var div = "<div class='alert alert-danger alert-dark'>" +
                 "<strong>Alerta!</strong> Desea realmente eliminar el archivo seleccionado." +
